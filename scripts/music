@@ -1,0 +1,79 @@
+#!/bin/zsh
+
+OLDIFS=$IFS
+IFS="
+"
+
+CONFIG=$HOME/.f2kconfig
+
+RELOAD_REQUIRED=1
+
+if [ -f $CONFIG ]
+then
+    CONFIGS=$(cat $CONFIG)
+    if [[ $(echo $CONFIGS | xargs | lines) == 1 && -f $CONFIGS/.music ]]
+    then
+        MUSIC_BASE=$CONFIGS
+        RELOAD_REQUIRED=0
+    fi
+fi
+
+if [ $RELOAD_REQUIRED -eq 1 ]
+then
+    MUSIC_BASES=$(find $HOME -name ".music" 2> /dev/null)
+    if [[ $(echo $MUSIC_BASES | xargs | lines) == 1 ]]
+    then
+        MUSIC_BASE=$(dirname $MUSIC_BASES)
+        echo $MUSIC_BASE > $CONFIG
+    else
+        echo $MUSIC_BASES > $CONFIG
+        echo Require a music path or you should select one of your music paths into $CONFIG
+    fi
+fi
+
+MUSIC=$MUSIC_BASE
+FLAC="${MUSIC}/FLAC"
+MP3="${MUSIC}/MP3"
+MUSIC1="${MUSIC}/乐曲"
+MUSIC2="${FLAC}/十首气势磅礴背景音乐"
+XW="${MUSIC}/许巍"
+F2K="${MUSIC}/foobar2000"
+FLAC_F2K="${F2K}/FLAC.m3u8"
+MP3_F2K="${F2K}/MP3.m3u8"
+MUSIC_F2K="${F2K}/MUSIC.m3u8"
+XW_F2K="${F2K}/XuWei.m3u8"
+
+rm ${FLAC_F2K} ${MP3_F2K} ${MUSIC_F2K} ${XW_F2K}
+
+echo "#" > ${FLAC_F2K}
+for i in `ls -1 ${FLAC}/`
+do
+    if [ -f ${FLAC}/$i ]
+    then
+        echo ${FLAC}/$i >> ${FLAC_F2K}
+    fi
+done
+
+echo "#" > ${MP3_F2K}
+for i in `ls -1 ${MP3}/`
+do
+    echo ${MP3}/$i >> ${MP3_F2K}
+done
+
+echo "#" > ${MUSIC_F2K}
+for i in `ls -1 ${MUSIC1}/`
+do
+    echo ${MUSIC1}/$i >> ${MUSIC_F2K}
+done
+for i in `ls -1 ${MUSIC2}/`
+do
+    echo ${MUSIC2}/$i >> ${MUSIC_F2K}
+done
+
+echo "#" > ${XW_F2K}
+for i in `ls -1 ${XW}/`
+do
+    echo ${XW}/$i >> ${XW_F2K}
+done
+
+IFS=$OLDIFS

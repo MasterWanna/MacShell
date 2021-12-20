@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+git pull || exit
+git add .
+if [[ $# == 0 ]] 
+then
+    git commit -m "$(now) Auto Commit"
+else
+    git commit -m "$(now) $*"
+fi
+git push
