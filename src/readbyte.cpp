@@ -125,7 +125,7 @@ int main(int argc, char **argv)
             break;
 
         case -1:
-            files.push_back(File{base, argv[optind], outpath});
+            files.push_back({base, argv[optind], outpath});
 #if DEV
             output << c << " " << argv[optind] << endl;
 #endif
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
     }
     if (files.size() == 0)
     {
-        files.push_back(File{base, "/dev/stdin", outpath});
+        files.push_back({base, "/dev/stdin", outpath});
     }
 
     for (auto item : files)

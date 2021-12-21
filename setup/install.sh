@@ -15,11 +15,16 @@ if [[ -f $file ]]
 then   
     if [[ ! "$(getopt y "$@")" =~ ^.*[Yy].*$ ]]
     then 
-        read -k 1 "opt?Already installed, uninstall first y/[n]: "
-        echo
+        read -k 1 "opt?Binary and Script are already installed. Uninstall them first. 
+Do you want to continue? Y/[N]: "
+        if [[ ! "$opt" == "
+" ]]
+        then
+            echo
+        fi
         if [[ ! "$opt" =~ ^[Yy]$ ]]
         then
-            echo Aborted
+            echo Abort.
             exit 1
         fi
     fi
