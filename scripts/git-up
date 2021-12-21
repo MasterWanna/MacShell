@@ -1,7 +1,6 @@
 #!/bin/zsh
 
-git pull || exit
-git add .
+git add . || exit
 if [[ $# == 0 ]] 
 then
     git commit -m "$(now) Auto Commit"

@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+git down
+git up "$*"
