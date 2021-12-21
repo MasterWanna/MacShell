@@ -7,6 +7,7 @@ cd $(dirname $(dirname $(rp $0)))
 file=$PWD/setup/.install
 if [ -f $file ]
 then
+    echo "Uninstalling ..."
     cd /usr/local/bin
     sudo rm -rf $(cat $file)
     cd -
