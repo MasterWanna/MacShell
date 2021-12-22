@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\t)*status: active'
