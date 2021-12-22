@@ -24,18 +24,11 @@ static struct option long_options[] =
     };
 #endif
 
-struct File
-{
-    int base;
-    string input;
-    string output;
-};
-
 static int base = 16;
 
 static string outpath = "/dev/stdout";
 
-static vector<File> files;
+static vector<string> files;
 
 string format(int val, int base, int len)
 {
@@ -57,11 +50,11 @@ string format(int val, int base, int len)
     return str;
 }
 
-void read_item(File item)
+void read_item(string item)
 {
-    int len = log(128) / log(item.base) + 1;
-    ifstream in(item.input);
-    ofstream out(item.output);
+    int len = log(128) / log(base) + 1;
+    ifstream in(item);
+    ofstream out(outpath);
     char c;
     while (in.read(&c, 1))
     {
@@ -74,7 +67,7 @@ void read_item(File item)
         }
         else
         {
-            out << format(c, item.base, len) << " ";
+            out << format(c, base, len) << " ";
         }
     }
     if (c != '\n')
@@ -125,7 +118,7 @@ int main(int argc, char **argv)
             break;
 
         case -1:
-            files.push_back({base, argv[optind], outpath});
+            files.push_back(argv[optind]);
 #if DEV
             output << c << " " << argv[optind] << endl;
 #endif
@@ -138,7 +131,7 @@ int main(int argc, char **argv)
     }
     if (files.size() == 0)
     {
-        files.push_back({base, "/dev/stdin", outpath});
+        files.push_back("/dev/stdin");
     }
 
     for (auto item : files)

@@ -13,27 +13,22 @@ using std::istringstream;
 using std::string;
 using std::vector;
 
-static char short_options[] = "ULCS";
+static char short_options[] = "ULulS";
 
 #if LONG
 static struct option long_options[] =
     {
         {"upper", no_argument, 0, 'U'},
         {"lower", no_argument, 0, 'L'},
-        {"capital", no_argument, 0, 'C'},
-        {"sentense", no_argument, 0, 'S'},
+        {"upper-capatial", no_argument, 0, 'u'},
+        {"lower-capatial", no_argument, 0, 'l'},
+        {"sentence", no_argument, 0, 'S'},
         {0, 0, 0, 0}};
 #endif
 
-struct format_option
-{
-    char *str;
-    char mod;
-};
+vector<char *> options;
 
-vector<format_option> options;
-
-char opt = 'S';
+char mod = 'S';
 
 void formatU(string str)
 {
@@ -59,7 +54,7 @@ void formatL(string str)
     cout << str << " ";
 }
 
-void formatC(string str)
+void formatu(string str)
 {
     char &c = str[0];
     if (c >= 'a' && c <= 'z')
@@ -103,39 +98,47 @@ void formatl(string str)
     cout << str << " ";
 }
 
-void format(string str, int mod)
+void format(string str)
 {
-    if (str.find(' ') == string::npos)
+    istringstream in(str);
+    string item;
+    if (mod == 'S')
     {
+        mod = 'l';
+        in >> item;
+        formatu(item);
+        while (in >> item)
+        {
+            formatl(item);
+        }
+    }
+    else
+    {
+        void (*format_func)(string);
         switch (mod)
         {
         case 'U':
-            formatU(str);
+            format_func = formatU;
             break;
 
         case 'L':
-            formatL(str);
+            format_func = formatL;
             break;
 
-        case 'C':
-            formatC(str);
+        case 'u':
+            format_func = formatu;
             break;
 
         case 'l':
-            formatl(str);
+            format_func = formatl;
             break;
 
         default:
             break;
         }
-    }
-    else
-    {
-        istringstream in(str);
-        string item;
         while (in >> item)
         {
-            format(item, mod);
+            format_func(item);
         }
     }
 }
@@ -160,27 +163,20 @@ int main(int argc, char **argv)
         {
         case 'U':
         case 'L':
-        case 'C':
+        case 'u':
+        case 'l':
         case 'S':
 #if DEV
             cout << c << endl;
 #endif
-            opt = c;
+            mod = c;
             break;
 
         case -1:
 #if DEV
             cout << c << " " << argv[optind] << endl;
 #endif
-            if (opt == 'S')
-            {
-                options.push_back({argv[optind], 'C'});
-                opt = 'l';
-            }
-            else
-            {
-                options.push_back({argv[optind], opt});
-            }
+            options.push_back(argv[optind]);
             optind++;
             break;
 
@@ -188,9 +184,9 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    for (format_option option : options)
+    for (char *option : options)
     {
-        format(option.str, option.mod);
+        format(option);
     }
     cout << endl;
 
