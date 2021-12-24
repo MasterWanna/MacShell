@@ -1,3 +1,3 @@
 #!/bin/zsh
 
-date '+%x %T'
+date '+%F %T'
