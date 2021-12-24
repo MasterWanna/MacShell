@@ -7,6 +7,7 @@
 #define DEV 0
 #define LONG 1
 
+using std::cin;
 using std::cout;
 using std::endl;
 using std::istringstream;
@@ -184,9 +185,20 @@ int main(int argc, char **argv)
             return 1;
         }
     }
-    for (char *option : options)
+    if (options.size() == 0)
     {
-        format(option);
+        string str;
+        while (cin >> str)
+        {
+            format(str);
+        }
+    }
+    else
+    {
+        for (char *option : options)
+        {
+            format(option);
+        }
     }
     cout << endl;
 
