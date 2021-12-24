@@ -13,13 +13,14 @@ using std::ofstream;
 using std::string;
 using std::vector;
 
-static char short_options[] = "b:o:";
+static char short_options[] = "b:o:i";
 
 #if LONG
 static struct option long_options[] =
     {
         {"base", required_argument, 0, 'b'},
         {"output", required_argument, 0, 'o'},
+        {"ignore-line-seperator", required_argument, 0, 'i'},
         {0, 0, 0, 0}
     };
 #endif
@@ -29,6 +30,8 @@ static int base = 16;
 static string outpath = "/dev/stdout";
 
 static vector<string> files;
+
+static bool ignore = false;
 
 string format(int val, int base, int len)
 {
@@ -61,7 +64,7 @@ void read_item(string item)
 #if DEV
         printf("%c", c);
 #endif
-        if (c == '\n' || c == '\r')
+        if (!ignore && (c == '\n' || c == '\r'))
         {
             out << endl;
         }
@@ -115,6 +118,10 @@ int main(int argc, char **argv)
 #if DEV
             output << "o " << outpath << endl;
 #endif
+            break;
+
+        case 'i':
+            ignore = true;
             break;
 
         case -1:
