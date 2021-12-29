@@ -3,7 +3,7 @@
 git add . || exit
 if [[ $# == 0 ]] 
 then
-    git commit -m "$(now) Auto Commit"
+    git commit -m "$(now) $(echo $(git status -s))"
 else
     git commit -m "$(now) $(echo $* | format -S)"
 fi
