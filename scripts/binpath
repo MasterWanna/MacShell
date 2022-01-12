@@ -1,0 +1,16 @@
+#!/bin/zsh
+
+function bp() { 
+    bin_path=$(which $1)
+    if [[ $? == 1 ]]
+    then
+        realpath "$1"
+    else
+        echo "$bin_path"
+    fi
+}
+
+for i in "$@"
+do
+    bp $i
+done
