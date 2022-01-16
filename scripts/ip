@@ -1,3 +1,10 @@
 #!/bin/zsh
 
+p=$(which pcregrep)
+if [[ $? == 1 ]]
+then
+    echo Require \"pcregrep\"
+    exit 1
+fi
+
 ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\t)*status: active'
