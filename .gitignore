@@ -1,5 +1,14 @@
+# cmake
 /build/
-/bin/
-.install
 
+# shell
+/bin/
+
+# installed shell
+/setup/.install
+
+# vscode
 .vscode/
+
+# To be done
+/temp/

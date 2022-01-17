@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+if [[ $(ls $HOME/.Trash/ | words) > 0 ]]
+then 
+    rm -r $(echo ~/.Trash/*)
+fi
+
+if [[ $(ls -A $HOME/.Trash/ | words) > 0 ]]
+then 
+    rm -r $(echo ~/.Trash/.*)
+fi
