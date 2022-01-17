@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-if [ "$#" -eq 0 ]
+if [[ $# == 0 ]]
 then
     num=$(ls -A | lines)
     echo "$num\t$pwd"

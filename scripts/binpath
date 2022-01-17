@@ -2,11 +2,11 @@
 
 function bp() { 
     bin_path=$(which $1)
-    if [[ $? == 1 ]]
+    if [[ $? == 0 ]]
     then
-        realpath "$1"
-    else
         echo "$bin_path"
+    else
+        realpath "$1"
     fi
 }
 

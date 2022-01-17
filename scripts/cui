@@ -1,0 +1,116 @@
+#!/bin/zsh
+
+# if you want to use sudo without password, run :
+#    sudo ln -s /usr/local/bin/cui /usr/local/bin/sudo
+# requires password first time and no need next time
+
+cmd=$(basename $0)
+pwd_path=$HOME/.config/passwd
+
+stty -echoctl 2> /dev/null
+trap 'echo; onExit' INT
+
+function encode() {
+    encoding=()
+    for i in {1..${#passwd}}
+    do
+        char=${passwd[$i]}
+        encoding+=$(printf "%02x" $(($(printf "%d" "'$char")*101%128)))
+    done
+    echo $encoding > $pwd_path
+}
+
+function decode() {
+    passwd=""
+    for i in $(cat $pwd_path)
+    do
+        char=$(echo $((16#$i*109%128)))
+        passwd+=$(echo ${(#)char})
+    done
+}
+
+function checkpwd() {
+    echo -n $passwd | /usr/bin/sudo -S true &> /dev/null
+    return $?
+}
+
+function readpwd() {
+    read -s "passwd?Password:"
+    if [[ $? == 1 ]]
+    then
+        echo
+        echo $cmd: no password was provided
+        onExit
+    fi
+    echo
+    checkpwd
+    return $?
+}
+
+function onExit() {
+    stty echoctl
+    if [[ $times > 0 ]]
+    then
+        echo $cmd: $times incorrect password attempt
+    else
+        echo $cmd: a password is required
+    fi
+    exit 1
+}
+
+function onSuccess() {
+    stty echoctl
+    encode
+    echo Initialize successful, run this command again
+    exit
+}
+
+setpwd=1
+times=0
+
+checkpwd
+if [[ $? == 0 ]]
+then
+    setpwd=0
+else
+    if [ -f $pwd_path ]
+    then
+        decode
+        checkpwd $passwd
+        if [[ $? == 1 ]]
+        then
+            rm $pwd_path
+        else
+            setpwd=0
+        fi
+    fi
+fi
+
+if [[ $setpwd == 0 ]]
+then
+    if [[ $# > 0 ]]
+    then
+        echo -n $passwd | /usr/bin/sudo -S $@
+    else
+        echo "usage: $cmd -h | -K | -k | -V
+usage: $cmd -v [-AknS] [-g group] [-h host] [-p prompt] [-u user]
+usage: $cmd -l [-AknS] [-g group] [-h host] [-p prompt] [-U user] [-u user] [command]
+usage: $cmd [-AbEHknPS] [-C num] [-D directory] [-g group] [-h host] [-p prompt] [-R directory] [-T timeout] [-u user] [VAR=value] [-i|-s] [<command>]
+usage: $cmd -e [-AknS] [-C num] [-D directory] [-g group] [-h host] [-p prompt] [-R directory] [-T timeout] [-u user] file ..."
+    fi
+else
+    for ((times = 0; times < 3; times += 1))
+    do
+        readpwd
+        if [[ $? == 1 ]]
+        then
+            if [[ $times < 2 ]]
+            then
+                echo Sorry, try again.
+            fi
+        else
+            onSuccess
+        fi
+    done
+    onExit
+fi
