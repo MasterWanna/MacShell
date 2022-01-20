@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+processes=$(ps)
+echo $processes | grep "$@" | awk '{print $1}' | xargs
