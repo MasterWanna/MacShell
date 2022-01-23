@@ -1,0 +1,34 @@
+#!/bin/zsh
+
+files=$(find "$@" 2> /dev/null)
+
+if [[ $(echo $files | lines) == 0 ]]
+then
+    echo No such files
+    exit
+fi
+
+file_arr=()
+echo $files | while read line
+do
+    if [[ ! "$line" =~ ^/System/Volumes/Data ]]
+    then
+        file_arr+="$line"
+    fi
+done
+
+echo $file_arr
+read -k 1 "opt?Do you want to remove above files? Y/[N]: "
+
+if [[ ! "$opt" == "
+" ]]
+then
+    echo
+fi
+if [[ ! "$opt" =~ ^[Yy]$ ]]
+then
+    echo Abort.
+    exit 1
+fi
+
+rm -rf $file_arr
