@@ -6,7 +6,10 @@ echo '------------------ brew upgrade ------------------'
 brew upgrade
 echo '----- brew upgrade `brew list --cask` --cask -----'
 brew upgrade `brew list --cask` --cask
-echo '---------------- conda update base ---------------'
-conda update -n base --update-all -y
-echo '---------------- conda update py39 ---------------'
-conda update --update-all -y
+
+echo '------------------ conda update ------------------'
+for i in $(conda env list | grep -v "^#" | awk '{print $1}')
+do
+    echo "$i :"
+    conda update --update-all -n $i
+done
