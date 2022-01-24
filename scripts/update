@@ -11,5 +11,5 @@ echo '------------------ conda update ------------------'
 for i in $(conda env list | grep -v "^#" | awk '{print $1}')
 do
     echo "$i :"
-    conda update --update-all -n $i
+    conda update --update-all -n $i -y
 done
