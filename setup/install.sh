@@ -33,7 +33,7 @@ fi
 
 echo "Installing ..."
 
-cmake -B build . > /dev/null
+cmake -B build -Wno-dev . > /dev/null
 make -C build > /dev/null
 
 ls bin > setup/.install
