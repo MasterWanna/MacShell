@@ -1,6 +1,7 @@
 #ifndef CMDLINE_HPP
 #define CMDLINE_HPP
 
+#include "base-file.hpp"
 #include <iostream>
 #include <set>
 #include <vector>

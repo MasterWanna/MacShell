@@ -43,6 +43,23 @@ map<string, set<string>> readdeps()
         }
     }
 
+    if (name.length() != 0)
+    {
+        mapping[name] = deps;
+    }
+
+#if DEV
+    for (auto pair : mapping)
+    {
+        cout << pair.first << ": ";
+        for (string s : pair.second)
+        {
+            cout << " " << s;
+        }
+        cout << endl;
+    }
+#endif
+
     return mapping;
 }
 

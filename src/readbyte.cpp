@@ -1,10 +1,10 @@
+#include "base-file.hpp"
 #include <getopt.h>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <math.h>
 
-#define DEV 0
 #define LONG 1
 
 using std::endl;
