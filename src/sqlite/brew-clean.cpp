@@ -1,5 +1,5 @@
 #include <sqlite3.h>
-#include <brew-cmd.hpp>
+#include "brew-cmd.hpp"
 
 sqlite3 *sqlite;
 string dbpath;
