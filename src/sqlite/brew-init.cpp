@@ -7,8 +7,12 @@ set<string> installed;
 set<string> root;
 map<string, set<string>> mapping;
 
-void addroot()
+int addroot()
 {
+    if (root.size() == 0)
+    {
+        return 0;
+    }
     string sql("insert into 'root-nodes' values ");
     bool start = false;
     for (string s : root)
@@ -26,9 +30,10 @@ void addroot()
     sqlite3_open(dbpath.c_str(), &sqlite);
     sqlite3_exec(sqlite, sql.c_str(), nullptr, nullptr, nullptr);
     sqlite3_close(sqlite);
+    return 0;
 }
 
-void checkmapping()
+int checkmapping()
 {
     for (string s : installed)
     {
@@ -38,6 +43,7 @@ void checkmapping()
             root.erase(sub);
         }
     }
+    return 0;
 }
 
 int query(void *unused, int argc, char **argv, char **column)

@@ -47,6 +47,10 @@ int query(void *unused, int argc, char **argv, char **column)
 
 int setroot(set<string> &subs, set<string> &insts)
 {
+    if (subs.size() + insts.size() == 0)
+    {
+        return 0;
+    }
     string sql("insert into 'root-nodes' values ");
     bool start = false;
     for (string s : subs)

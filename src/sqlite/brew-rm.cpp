@@ -42,6 +42,10 @@ int query(void *unused, int argc, char **argv, char **column)
 
 int rmroot(set<string> &roots, set<string> &fixes)
 {
+    if (roots.size() + fixes.size() == 0)
+    {
+        return 0;
+    }
     string sql("delete from 'root-nodes' where ");
     bool start = false;
     for (string s : roots)

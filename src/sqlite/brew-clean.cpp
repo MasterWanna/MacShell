@@ -5,6 +5,7 @@ sqlite3 *sqlite;
 string dbpath;
 set<string> installed;
 set<string> root;
+set<string> uninstalled;
 map<string, set<string>> mapping;
 
 int rmset()
@@ -22,7 +23,45 @@ int rmset()
     return runcmd(cmd);
 }
 
-void checkset(set<string> torm)
+int rmindex()
+{
+    if (uninstalled.size() == 0)
+    {
+        return 0;
+    }
+    string sql("delete from 'root-nodes' where ");
+    bool start = false;
+    for (string s : uninstalled)
+    {
+        if (start)
+        {
+            sql += " or ";
+        }
+        else
+        {
+            start = true;
+        }
+        sql += "name = '" + s + "'";
+    }
+#if DEV
+    cout << sql << endl;
+#endif
+    sqlite3_open(dbpath.c_str(), &sqlite);
+    sqlite3_exec(sqlite, sql.c_str(), nullptr, nullptr, nullptr);
+    sqlite3_close(sqlite);
+    return 0;
+}
+
+int checkavail()
+{
+    for (string s : installed)
+    {
+        uninstalled.erase(s);
+    }
+    return 0;
+}
+
+int checkset(set<string> &torm)
 {
     for (string s : torm)
     {
@@ -36,6 +75,7 @@ void checkset(set<string> torm)
             }
         }
     }
+    return 0;
 }
 
 int query(void *unused, int argc, char **argv, char **column)
@@ -59,6 +99,12 @@ int main(int argc, char **argv)
     sqlite3_exec(sqlite, "select * from 'root-nodes'", query, nullptr, nullptr);
     // Close db
     sqlite3_close(sqlite);
+    // Copy root
+    uninstalled = root;
+    // Check uninstalled
+    checkavail();
+    // Remove uninstalled root index
+    rmindex();
     // Read mapping
     mapping = readdeps();
     // Check rubbish
