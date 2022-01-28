@@ -5,6 +5,8 @@
 #include <iostream>
 #include <set>
 #include <vector>
+#include <unistd.h>
+#include <sys/ioctl.h>
 
 using std::cout;
 using std::endl;
@@ -47,6 +49,14 @@ int runcmd(string cmd, bool echo = true)
         cout << cmd << endl;
     }
     return system(cmd.c_str());
+}
+
+int terminal_width()
+{
+    // get terminal width
+    struct winsize w;
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+    return w.ws_col;
 }
 
 #endif
