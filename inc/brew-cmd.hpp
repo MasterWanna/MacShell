@@ -63,4 +63,9 @@ map<string, set<string>> readdeps()
     return mapping;
 }
 
+int exists(string formula) 
+{
+    return !runcmd("brew info --formula " + formula + " &> /dev/null", false);
+}
+
 #endif

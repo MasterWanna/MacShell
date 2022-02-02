@@ -31,7 +31,7 @@ int check(string formula)
     {
         return FIXINST;
     }
-    if (runcmd("brew info --formula " + formula + " &> /dev/null"))
+    if (!exists(formula))
     {
         return ERROR;
     }
