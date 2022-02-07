@@ -59,4 +59,4 @@ int terminal_width()
     return w.ws_col;
 }
 
-#endif
+#endif // CMDLINE_HPP

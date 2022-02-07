@@ -68,4 +68,4 @@ int exists(string formula)
     return !runcmd("brew info --formula " + formula + " &> /dev/null", false);
 }
 
-#endif
+#endif // BREWCMD_HPP

@@ -1,5 +1,5 @@
-#ifndef FILEREADER_HPP
-#define FILEREADER_HPP
+#ifndef IO_HPP
+#define IO_HPP
 
 #include <fstream>
 #include <string>
@@ -229,4 +229,4 @@ void format_print(char **items, int start, int end, string (*format)(char *) = n
     }
 }
 
-#endif
+#endif // IO_HPP

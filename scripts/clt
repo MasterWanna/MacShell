@@ -1,11 +1,20 @@
 #!/bin/zsh
 
-if [[ $(ls $HOME/.Trash/ | words) > 0 ]]
+OLDIFS=$IFS
+IFS=$'\n'
+
+cd $HOME/.Trash/
+
+if [[ $(ls | words) > 0 ]]
 then 
-    rm -r $(echo ~/.Trash/*)
+    rm -rf $(ls)
 fi
 
-if [[ $(ls -A $HOME/.Trash/ | words) > 0 ]]
+if [[ $(ls -A | words) > 0 ]]
 then 
-    rm -r $(echo ~/.Trash/.*)
+    rm -rf $(ls -A)
 fi
+
+IFS=$OLDIFS
+
+cd -
