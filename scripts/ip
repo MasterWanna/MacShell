@@ -7,4 +7,4 @@ then
     exit 1
 fi
 
-ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\t)*status: active'
+ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\t)*'
