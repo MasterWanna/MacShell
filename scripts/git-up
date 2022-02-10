@@ -1,12 +1,19 @@
 #!/bin/zsh
 
-cd $(git rev-parse --show-toplevel) || exit 1
+git_root_path=$(git rev-parse --show-toplevel)
+if [[ $? > 0 ]]
+then
+    exit 1
+fi
+cd $git_root_path
+
 git add . 
 if [[ $# == 0 ]] 
 then
-    git commit -m "$(now) $(echo $(git status -s))"
+    git commit -m "$(now) $(echo $(git st))"
 else
-    git commit -m "$(now) $(echo $(git status -s)) : $*"
+    git commit -m "$(now) $(echo $(git st)) : $*"
 fi
 git push
+
 cd -
