@@ -9,15 +9,17 @@ then
 fi
 
 file_arr=()
+file_name=""
 echo $files | while read line
 do
     if [[ ! "$line" =~ ^/System/Volumes/Data ]]
     then
         file_arr+="$line"
+        file_name=$file_name$line$'\n'
     fi
 done
 
-echo $file_arr
+echo -n $file_name
 read -k 1 "opt?Do you want to remove above files? Y/[N]: "
 
 if [[ ! "$opt" == "
