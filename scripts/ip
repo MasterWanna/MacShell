@@ -2,7 +2,15 @@
 
 if [[ $# > 0 ]]
 then
-    ip-$@
+    command -v ip-$1 > /dev/null
+    res=$?
+    if [[ $res == 0 ]]
+    then
+        ip-$@
+    else
+        echo "ip-$1 not found"
+        exit $res
+    fi
 else
     p=$(which pcregrep)
     if [[ $? != 0 ]]
