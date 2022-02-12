@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+conda run -n py39 python -c "
+import json
+import requests
+obj = requests.get('http://ipinfo.io').json()
+obj.pop('readme')
+print(json.dumps(obj, indent=2))
+"
