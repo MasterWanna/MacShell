@@ -1,18 +1,15 @@
 #!/bin/zsh
 
-if [[ $# > 0 ]]
+process=($(pgrep -f EasyConnect))
+if [[ $(echo $process | words) > 0 ]]
 then
-    process=($(pgrep -f EasyConnect))
-    if [[ $(echo $process | words) > 0 ]]
-    then
-        while [[ $(echo $process | words) > 0 ]]
-        do
-            sudo kill -9 $process
-            sleep 1
-            process=($(pgrep -f EasyConnect))
-        done
-    else
-        echo "No process found"
-        exit 1
-    fi
+    while [[ $(echo $process | words) > 0 ]]
+    do
+        sudo kill -9 $process
+        sleep 1
+        process=($(pgrep -f EasyConnect))
+    done
+else
+    echo "No process found"
+    exit 1
 fi
