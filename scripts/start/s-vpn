@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+/Applications/EasyConnect.app/Contents/Resources/bin/EasyMonitor &> /dev/null &
+/Applications/EasyConnect.app/Contents/MacOS/EasyConnect &> /dev/null &
+exit

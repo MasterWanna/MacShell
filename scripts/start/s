@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+command -v s-$1 > /dev/null
+
+if [[ $? == 0 ]]
+then
+    s-$@
+else
+    echo "s-$1: command not found"
+    exit 1
+fi

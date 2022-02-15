@@ -1,0 +1,32 @@
+#!/bin/zsh
+
+OLDIFS=$IFS
+IFS=$'\n'
+
+for i in $@
+do
+    command -v cl-$i > /dev/null
+
+    if [[ $? == 0 ]]
+    then
+        cl-$i
+    else
+        cd "$i"
+
+        if [[ $(ls | words) > 0 ]]
+        then 
+            rm -rf $(ls)
+        fi
+
+        if [[ $(ls -A | words) > 0 ]]
+        then 
+            rm -rf $(ls -A)
+        fi
+
+        cd -
+    fi
+
+    
+done
+
+IFS=$OLDIFS

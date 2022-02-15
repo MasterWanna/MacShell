@@ -30,5 +30,5 @@ endforeach()
 
 add_custom_command(
   TARGET ${TARGETNAME} POST_BUILD
-  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/scripts ${EXECUTABLE_OUTPUT_PATH}
+  COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/scripts/* ${EXECUTABLE_OUTPUT_PATH}
 )
