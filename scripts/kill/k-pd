@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-sudo pkill -f "Parallels Desktop"
+sudo pkill -f "Parallels Desktop" "PD.Runner"
 if [[ $? == 0 ]]
 then
     echo "Parallels Desktop is killed"
