@@ -1,5 +1,13 @@
 #!/bin/zsh
 
+if [[ $# == 0 ]]
+then
+    echo -n Usage:" "
+    cd /usr/local/bin
+    echo k-* | sed 's/ /, /g' | sed 's/-/ /g'
+    exit 1
+fi
+
 command -v k-$1 > /dev/null
 
 if [[ $? == 0 ]]
