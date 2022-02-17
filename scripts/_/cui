@@ -90,7 +90,8 @@ if [[ $setpwd == 0 ]]
 then
     if [[ $# > 0 ]]
     then
-        echo -n $passwd | /usr/bin/sudo -S $@
+        echo -n $passwd | /usr/bin/sudo -S true
+        /usr/bin/sudo $@
     else
         echo "usage: $cmd -h | -K | -k | -V
 usage: $cmd -v [-AknS] [-g group] [-h host] [-p prompt] [-u user]
