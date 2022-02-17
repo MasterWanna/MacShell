@@ -1,36 +1,76 @@
 #!/bin/zsh
 
+function print_in_lines() {
+    printf '%s\n' "${@[@]}"
+}
+
+function confirm() {
+    if [[ ${#@} == 0 ]]
+    then
+        echo "No files found"
+        exit 1
+    fi
+
+    print_in_lines $@
+
+    read -k 1 "opt?Do you want to remove above files? Y/D/[N]: "
+    if [[ ! "$opt" == "
+" ]]
+    then
+        echo
+    fi
+
+    if [[ "$opt" =~ ^[Yy]$ ]]
+    then
+        rm -rf $@
+        exit $?
+    fi
+
+    if [[ "$opt" =~ ^[Dd]$ ]]
+    then
+        echo --------------------------------------------------
+        file_to_rm=()
+        for file in $@
+        do
+            echo $file
+            read -k 1 "opt?Do you want to remove this file? Y/[N]: "
+
+            if [[ ! "$opt" == "
+" ]]
+            then
+                echo
+            fi
+
+            if [[ "$opt" =~ ^[Yy]$ ]]
+            then
+                file_to_rm+="$file"
+            fi
+        done
+
+        echo --------------------------------------------------
+
+        if [[ ${#file_to_rm} == 0 ]]
+        then
+            echo "No files selected"
+            exit 1
+        fi
+
+        confirm $file_to_rm
+    fi
+
+    echo Abort.
+    exit 1
+}
+
 files=$(find "$@" 2> /dev/null)
 
-if [[ $(echo $files | lines) == 0 ]]
-then
-    echo No such files
-    exit
-fi
-
 file_arr=()
-file_name=""
-echo $files | while read line
+echo "$files" | while read line
 do
     if [[ ! "$line" =~ ^/System/Volumes/Data ]]
     then
         file_arr+="$line"
-        file_name=$file_name$line$'\n'
     fi
 done
 
-echo -n $file_name
-read -k 1 "opt?Do you want to remove above files? Y/[N]: "
-
-if [[ ! "$opt" == "
-" ]]
-then
-    echo
-fi
-if [[ ! "$opt" =~ ^[Yy]$ ]]
-then
-    echo Abort.
-    exit 1
-fi
-
-rm -rf $file_arr
+confirm $file_arr
