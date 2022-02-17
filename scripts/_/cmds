@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+# zsh completion
+# autoload -Uz compinit
+# compinit
+# bash completion (required)
+autoload -Uz bashcompinit
+bashcompinit
+
+compgen -c | sort
