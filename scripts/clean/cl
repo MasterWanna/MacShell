@@ -11,19 +11,24 @@ do
     then
         cl-$i
     else
-        cd "$i"
+        if [ -f $i ]
+        then
+            rm -f $i
+        else
+            cd "$i"
 
-        if [[ $(ls | words) > 0 ]]
-        then 
-            rm -rf $(ls)
+            if [[ $(ls | words) > 0 ]]
+            then 
+                rm -rf $(ls)
+            fi
+
+            if [[ $(ls -A | words) > 0 ]]
+            then 
+                rm -rf $(ls -A)
+            fi
+
+            cd -
         fi
-
-        if [[ $(ls -A | words) > 0 ]]
-        then 
-            rm -rf $(ls -A)
-        fi
-
-        cd -
     fi
 
     
