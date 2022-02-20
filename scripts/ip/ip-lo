@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-p=$(which pcregrep)
+p=$(command -v pcregrep)
 if [[ $? != 0 ]]
 then
     echo Require \"pcregrep\"
