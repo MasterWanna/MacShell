@@ -16,9 +16,8 @@ static char short_options[] = "s:";
 string deli("\\s");
 vector<string> items;
 
-void match(string item, string deli)
+void match(string item, regex &reg)
 {
-    regex reg("[" + deli + "]");
     vector<string> v(sregex_token_iterator(item.begin(), item.end(), reg, -1),
                      sregex_token_iterator());
     for (auto i : v)
@@ -58,9 +57,11 @@ int main(int argc, char **argv)
         }
     }
 
+    regex reg("[" + deli + "]");
+
     for (auto &item : items)
     {
-        match(item, deli);
+        match(item, reg);
     }
 
     return 0;
