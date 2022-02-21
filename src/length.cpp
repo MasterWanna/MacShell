@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <cstring>
 #include "io.hpp"
 
 using std::to_string;
