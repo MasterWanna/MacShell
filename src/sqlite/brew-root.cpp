@@ -1,7 +1,8 @@
-#include <sqlite3.h>
+#include "sqlite.hpp"
 #include <unistd.h>
 #include "brew-cmd.hpp"
 #include "io.hpp"
+#include "constants.hpp"
 
 using std::to_string;
 
@@ -18,16 +19,8 @@ int query(void *unused, int argc, char **argv, char **column)
 
 int main(int argc, char **argv)
 {
-    // database
-    dbpath = string(getenv("HOME")) + "/.config/brew-formula.db";
-    // Open db
-    sqlite3_open(dbpath.c_str(), &sqlite);
     // Initialize
-    sqlite3_exec(sqlite, "create table if not exists 'root-nodes' (name unique)", nullptr, nullptr, nullptr);
-    // Select all root nodes
-    sqlite3_exec(sqlite, "select * from 'root-nodes'", query, nullptr, nullptr);
-    // Close db
-    sqlite3_close(sqlite);
+    sqlite_exec_multi(brew_formula_db_path, {{"create table if not exists 'root-nodes' (name text)"}, {"select * from 'root-nodes'", query}});
     // Print everything in root
     int size = root.size();
     // get max length in root

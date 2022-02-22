@@ -1,5 +1,6 @@
-#include <sqlite3.h>
+#include "sqlite.hpp"
 #include "brew-cmd.hpp"
+#include "constants.hpp"
 
 sqlite3 *sqlite;
 string dbpath;
@@ -72,9 +73,7 @@ int rmroot(set<string> &roots, set<string> &fixes)
         }
         sql += "name = '" + s + "'";
     }
-    sqlite3_open(dbpath.c_str(), &sqlite);
-    sqlite3_exec(sqlite, sql.c_str(), nullptr, nullptr, nullptr);
-    sqlite3_close(sqlite);
+    sqlite_exec_once(dbpath, sql);  
     return 0;
 }
 
@@ -101,16 +100,8 @@ int main(int argc, char **argv)
 {
     // brew nodes
     installed = allnodes();
-    // database
-    dbpath = string(getenv("HOME")) + "/.config/brew-formula.db";
-    // Open db
-    sqlite3_open(dbpath.c_str(), &sqlite);
-    // Initialize
-    sqlite3_exec(sqlite, "create table if not exists 'root-nodes' (name unique)", nullptr, nullptr, nullptr);
-    // Select all root nodes
-    sqlite3_exec(sqlite, "select * from 'root-nodes'", query, nullptr, nullptr);
-    // Close db
-    sqlite3_close(sqlite);
+    // Inintailize
+    sqlite_exec_multi(brew_formula_db_path, {{"create table if not exists 'root-nodes' (name text)"}, {"select * from 'root-nodes'", query}});
     // Check changes
     set<string> sets[NONE];
     for (int i = 1; i < argc; i++)
