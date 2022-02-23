@@ -2,6 +2,7 @@
 #include "io.hpp"
 #include "constants.hpp"
 #include <getopt.h>
+#include <limits.h>
 
 static char short_options[] = "r";
 
@@ -97,9 +98,12 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    char path[PATH_MAX];
+
     for (string s : repos)
     {
-        realpaths.insert(realpath(s.c_str(), nullptr));
+        realpath(s.c_str(), path);
+        realpaths.insert(path);
     }
 
     if (!rm)
