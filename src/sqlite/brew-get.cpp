@@ -99,7 +99,7 @@ int install(set<string> &fix, set<string> &insts)
     return runcmd(cmd);
 }
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
     // brew nodes
     installed = allnodes();

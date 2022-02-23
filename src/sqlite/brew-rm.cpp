@@ -96,7 +96,7 @@ int uninstall(set<string> &roots, set<string> &uninsts)
     return runcmd(cmd);
 }
 
-int main(int argc, char **argv)
+int main(int argc, const char **argv)
 {
     // brew nodes
     installed = allnodes();

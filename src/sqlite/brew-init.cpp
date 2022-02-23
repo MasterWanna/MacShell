@@ -50,7 +50,7 @@ int query(void *unused, int argc, char **argv, char **column)
     return 0;
 }
 
-int main(int argc, char **argv)
+int main()
 {
     // brew nodes
     root = installed = allnodes();

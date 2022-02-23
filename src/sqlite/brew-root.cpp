@@ -17,7 +17,7 @@ int query(void *unused, int argc, char **argv, char **column)
     return 0;
 }
 
-int main(int argc, char **argv)
+int main()
 {
     // Initialize
     sqlite_exec_multi(brew_formula_db_path, {{"create table if not exists 'root-nodes' (name text)"}, {"select * from 'root-nodes'", query}});
