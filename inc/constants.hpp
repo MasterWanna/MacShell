@@ -5,6 +5,8 @@
 
 using std::string;
 
-string brew_formula_db_path(getenv("HOME") + string("/.config/brew-formula.db"));
+string db_path(getenv("HOME") + string("/.config/"));
+string brew_formula_db_path(db_path + "brew-formula.db");
+string git_repo_db_path(db_path + "git-repo.db");
 
 #endif // CONSTANTS_HPP
