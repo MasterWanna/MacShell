@@ -59,4 +59,11 @@ int terminal_width()
     return w.ws_col;
 }
 
+string delimeter(char delim = '-')
+{
+    int width = terminal_width();
+    string s(width, delim);
+    return s;
+}
+
 #endif // CMDLINE_HPP

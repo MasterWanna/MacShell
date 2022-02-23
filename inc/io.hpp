@@ -2,12 +2,25 @@
 #define IO_HPP
 
 #include <fstream>
-#include <string>
+#include <cstring>
+#include <sys/stat.h>
 #include "cmdline.hpp"
 
 using std::ifstream;
 using std::string;
 using std::to_string;
+
+bool check_file_exists(string file_path)
+{
+    struct stat sb;
+    return stat(file_path.c_str(), &sb) == 0 && S_ISREG(sb.st_mode);
+}
+
+bool check_directory_exists(string dir_path)
+{
+    struct stat sb;
+    return stat(dir_path.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode);
+}
 
 // read file by path
 vector<string> readfile(const char *path)
