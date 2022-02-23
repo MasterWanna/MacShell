@@ -10,7 +10,7 @@ include_directories(inc/)
 
 find_package(sqlite3 REQUIRED)
 
-file(GLOB SOURCES ./src/*.cpp)
+file(GLOB SOURCES ./src/*.cpp ./temp/src/*.cpp)
 
 foreach(file_cpp IN ITEMS ${SOURCES})
   # Get file name without directory
@@ -19,7 +19,7 @@ foreach(file_cpp IN ITEMS ${SOURCES})
   set(TARGETNAME ${name_cpp})
 endforeach()
 
-file(GLOB SOURCES ./src/sqlite/*.cpp)
+file(GLOB SOURCES ./src/sqlite/*.cpp ./temp/src/sqlite/*.cpp)
 
 foreach(file_cpp IN ITEMS ${SOURCES})
   # Get file name without directory
@@ -32,3 +32,10 @@ add_custom_command(
   TARGET ${TARGETNAME} POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/scripts/* ${EXECUTABLE_OUTPUT_PATH}
 )
+
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/temp/scripts/*)
+  add_custom_command(
+    TARGET ${TARGETNAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/temp/scripts/* ${EXECUTABLE_OUTPUT_PATH}
+  )
+endif()
