@@ -3,10 +3,14 @@
 
 #include <fstream>
 #include <cstring>
+#include <iomanip>
 #include <sys/stat.h>
 #include "cmdline.hpp"
 
 using std::ifstream;
+using std::left;
+using std::max;
+using std::setw;
 using std::string;
 using std::to_string;
 
@@ -35,53 +39,62 @@ vector<string> readfile(const char *path)
     return items;
 }
 
+// arrange items as in a table like
+// TODO : clever arrangement needed
+vector<size_t> arrange(vector<size_t> lens, int width)
+{
+    size_t max_len = 0;
+    for (size_t len : lens)
+    {
+        max_len = max(max_len, len);
+    }
+    vector<size_t> arranged;
+    int item_a_line = width / (max_len + 1);
+    for (int i = 0; i < item_a_line; i++)
+    {
+        arranged.push_back(max_len);
+    }
+    return arranged;
+}
+
 // format print for string set
 void format_print(set<string> &items, string (*format)(string &) = nullptr)
 {
     if (format == nullptr)
     {
-        int maxlen = 0, len;
+        size_t maxlen = 0, len;
+        vector<size_t> lens;
         for (string s : items)
         {
             len = s.length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, len);
+            lens.push_back(len);
         }
-        string str("%-" + to_string(maxlen) + "s ");
-        int item_in_line = terminal_width() / (maxlen + 1);
-        const char *buf = str.c_str();
-        int size = 0;
+        vector<size_t> arranged = arrange(lens, terminal_width());
+        int i = 0, items_a_line = arranged.size();
         for (string s : items)
         {
-            printf(buf, s.c_str());
-            if (++size % item_in_line == 0)
+            cout << setw(arranged[i++ % items_a_line]) << left << s << " ";
+            if (i % items_a_line == 0)
             {
-                printf("\n");
+                cout << endl;
             }
         }
-        if (size % item_in_line != 0)
+        if (i % items_a_line != 0)
         {
-            printf("\n");
+            cout << endl;
         }
     }
     else
     {
-        int maxlen = 0, len;
+        size_t maxlen = 0;
         for (string s : items)
         {
-            len = s.length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, s.length());
         }
-        string str("%" + to_string(maxlen) + "s : %s\n");
-        const char *buf = str.c_str();
         for (string s : items)
         {
-            printf(buf, s.c_str(), format(s).c_str());
+            cout << setw(maxlen) << left << s << " : " << format(s) << endl;
         }
     }
 }
@@ -91,49 +104,39 @@ void format_print(vector<string> &items, string (*format)(string &) = nullptr)
 {
     if (format == nullptr)
     {
-        int maxlen = 0, len;
+        size_t maxlen = 0, len;
+        vector<size_t> lens;
         for (string s : items)
         {
             len = s.length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, len);
+            lens.push_back(len);
         }
-        string str("%-" + to_string(maxlen) + "s ");
-        int item_in_line = terminal_width() / (maxlen + 1);
-        const char *buf = str.c_str();
-        int size = 0;
+        vector<size_t> arranged = arrange(lens, terminal_width());
+        int i = 0, items_a_line = arranged.size();
         for (string s : items)
         {
-            printf(buf, s.c_str());
-            if (++size % item_in_line == 0)
+            cout << setw(arranged[i++ % items_a_line]) << left << s << " ";
+            if (i % items_a_line == 0)
             {
-                printf("\n");
+                cout << endl;
             }
         }
-        if (size % item_in_line != 0)
+        if (i % items_a_line != 0)
         {
-            printf("\n");
+            cout << endl;
         }
     }
     else
     {
-        int size = items.size();
-        int maxlen = 0, len;
+        size_t maxlen = 0;
         for (string s : items)
         {
-            len = s.length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, s.length());
         }
-        string str("%" + to_string(maxlen) + "s : %s\n");
-        const char *buf = str.c_str();
         for (string s : items)
         {
-            printf(buf, s.c_str(), format(s).c_str());
+            cout << setw(maxlen) << left << s << " : " << format(s) << endl;
         }
     }
 }
@@ -143,49 +146,39 @@ void format_print(string *items, int start, int end, string (*format)(string &) 
 {
     if (format == nullptr)
     {
-        int maxlen = 0, len;
+        size_t maxlen = 0, len;
+        vector<size_t> lens;
         for (int i = start; i < end; i++)
         {
             len = items[i].length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, len);
+            lens.push_back(len);
         }
-        string str("%-" + to_string(maxlen) + "s ");
-        int item_in_line = terminal_width() / (maxlen + 1);
-        const char *buf = str.c_str();
-        int size = 0;
+        vector<size_t> arranged = arrange(lens, terminal_width());
+        int i = 0, items_a_line = arranged.size();
         for (int i = start; i < end; i++)
         {
-            printf(buf, items[i].c_str());
-            if (++size % item_in_line == 0)
+            cout << setw(arranged[(i - start) % items_a_line]) << left << items[i] << " ";
+            if (i % items_a_line == 0)
             {
-                printf("\n");
+                cout << endl;
             }
         }
-        if (size % item_in_line != 0)
+        if (i % items_a_line != 0)
         {
-            printf("\n");
+            cout << endl;
         }
     }
     else
     {
-        int size = end - start;
-        int maxlen = 0, len;
+        size_t maxlen = 0;
         for (int i = start; i < end; i++)
         {
-            len = items[i].length();
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, items[i].length());
         }
-        string str("%" + to_string(maxlen) + "s : %s\n");
-        const char *buf = str.c_str();
         for (int i = start; i < end; i++)
         {
-            printf(buf, items[i].c_str(), format(items[i]).c_str());
+            cout << setw(maxlen) << left << items[i] << " : " << format(items[i]) << endl;
         }
     }
 }
@@ -195,49 +188,39 @@ void format_print(char **items, int start, int end, string (*format)(char *) = n
 {
     if (format == nullptr)
     {
-        int maxlen = 0, len;
+        size_t maxlen = 0, len;
+        vector<size_t> lens;
         for (int i = start; i < end; i++)
         {
             len = strlen(items[i]);
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, len);
+            lens.push_back(len);
         }
-        string str("%-" + to_string(maxlen) + "s ");
-        int item_in_line = terminal_width() / (maxlen + 1);
-        const char *buf = str.c_str();
-        int size = 0;
+        vector<size_t> arranged = arrange(lens, terminal_width());
+        int i = 0, items_a_line = arranged.size();
         for (int i = start; i < end; i++)
         {
-            printf(buf, items[i]);
-            if (++size % item_in_line == 0)
+            cout << setw(arranged[(i - start) % items_a_line]) << left << items[i] << " ";
+            if (i % items_a_line == 0)
             {
-                printf("\n");
+                cout << endl;
             }
         }
-        if (size % item_in_line != 0)
+        if (i % items_a_line != 0)
         {
-            printf("\n");
+            cout << endl;
         }
     }
     else
     {
-        int size = end - start;
-        int maxlen = 0, len;
+        size_t maxlen = 0;
         for (int i = start; i < end; i++)
         {
-            len = strlen(items[i]);
-            if (len > maxlen)
-            {
-                maxlen = len;
-            }
+            maxlen = max(maxlen, strlen(items[i]));
         }
-        string str("%" + to_string(maxlen) + "s : %s\n");
-        const char *buf = str.c_str();
         for (int i = start; i < end; i++)
         {
-            printf(buf, items[i], format(items[i]).c_str());
+            cout << setw(maxlen) << left << items[i] << " : " << format(items[i]) << endl;
         }
     }
 }
