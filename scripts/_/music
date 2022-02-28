@@ -18,16 +18,33 @@ then
     fi
 fi
 
-if [ $RELOAD_REQUIRED -eq 1 ]
+if [[ $RELOAD_REQUIRED == 1 ]]
 then
     MUSIC_BASES=$(find $HOME -name ".music" 2> /dev/null)
-    if [[ $(echo $MUSIC_BASES | xargs | lines) == 1 ]]
+    base_arr=()
+    echo "$MUSIC_BASES" | while read line
+    do
+        rpath=$(realpath $line)
+        if [[ ${base_arr[(ie)$rpath]} > ${#base_arr} ]]
+        then
+            base_arr+=$rpath
+            break
+        fi
+    done
+    if [[ ${#base_arr} == 0 ]]
     then
-        MUSIC_BASE=$(dirname $MUSIC_BASES)
-        echo $MUSIC_BASE > $CONFIG
+        echo "No music directories found."
+        exit 1
     else
-        echo $MUSIC_BASES > $CONFIG
-        echo Require a music path or you should select one of your music paths into $CONFIG
+        if [[ ${#base_arr} == 1 ]]
+        then
+            MUSIC_BASE=$(dirname $base_arr[1])
+            echo $MUSIC_BASE > $CONFIG
+        else
+            printf '%s\n' "${base_arr[@]}" > $CONFIG
+            echo Require a music path or you should select one of your music paths into $CONFIG
+            exit 1
+        fi
     fi
 fi
 
@@ -41,7 +58,7 @@ MP3_F2K="${F2K}/MP3.m3u8"
 MUSIC_F2K="${F2K}/MUSIC.m3u8"
 XW_F2K="${F2K}/XuWei.m3u8"
 
-rm ${FLAC_F2K} ${MP3_F2K} ${MUSIC_F2K} ${XW_F2K}
+rm ${FLAC_F2K} ${MP3_F2K} ${MUSIC_F2K} ${XW_F2K} 2> /dev/null
 
 echo "#" > ${FLAC_F2K}
 for i in `ls -1 ${FLAC}/`
