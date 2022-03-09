@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+echo
+login -f $USER zsh -c "cd $PWD && zsh"
