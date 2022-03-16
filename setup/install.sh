@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-function rp() { python -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$1"; }
+function rp() { python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))" "$1"; }
 
 cd $(dirname $(dirname $(rp $0)))
 
