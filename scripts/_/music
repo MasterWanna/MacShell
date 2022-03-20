@@ -55,6 +55,9 @@ F2K="${MUSIC_BASE}/foobar2000"
 SONG_F2K="${F2K}/SONG.m3u8"
 MUSIC_F2K="${F2K}/MUSIC.m3u8"
 
+echo "Music folder      : ${MUSIC_BASE}"
+echo "Foobar2000 config : ${F2K}"
+
 rm -rf ${F2K} 2> /dev/null
 mkdir -p ${F2K}
 
