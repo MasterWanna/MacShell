@@ -8,8 +8,11 @@ echo '----- brew upgrade `brew list --cask` --cask -----'
 brew upgrade `brew list --cask` --cask
 
 echo '------------------ conda update ------------------'
-for i in $(conda env list | grep -v "^#" | awk '{print $1}')
-do
-    echo "$i :"
-    conda update --update-all -n $i -y
-done
+echo 'Environment : base'
+conda update -n base --all -y
+environ=$(conda env list | grep py3 | awk '{print $1}')
+echo "Environment : $environ"
+echo
+conda update -n $environ --all -y
+echo '------------------ conda clean -------------------'
+conda clean -a -y
