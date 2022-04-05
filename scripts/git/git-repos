@@ -1,0 +1,44 @@
+#!python3
+
+import os
+import sqlite3
+import argparse
+from sys import stdout
+
+git_repo_paths = []
+git_repo_remove = []
+git_repo_db_path = os.getenv("HOME") + "/.config/git-repo.db"
+
+conn = sqlite3.connect(git_repo_db_path)
+conn.execute("create table if not exists 'local-repo' (path text unique)")
+
+cursor = conn.execute("select path from 'local-repo' order by path")
+for row in cursor:
+    path = row[0]
+    if os.system("git -C " + path +
+                 " rev-parse --show-toplevel &> /dev/null"):
+        git_repo_remove.append(path)
+    else:
+        git_repo_paths.append(path)
+cursor.close()
+
+conn.executemany("delete from 'local-repo' where path = ?",
+                 [(path,) for path in git_repo_remove])
+conn.close()
+
+max_length = max([len(path) for path in git_repo_paths])
+
+
+def update_git_repo(path: str):
+    print(path.ljust(max_length + 1) + ":", end="")
+    stdout.flush()
+    os.system("git -C " + path + " remote -v | grep fetch | awk '{print $2}'")
+
+
+parser = argparse.ArgumentParser(description="Show git repos")
+
+parser.parse_args()
+
+
+for path in git_repo_paths:
+    update_git_repo(path)

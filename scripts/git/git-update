@@ -1,0 +1,54 @@
+#!python3
+
+from ast import parse
+import os
+import sqlite3
+import argparse
+from sys import stdout
+from time import sleep
+
+git_repo_paths = []
+git_repo_remove = []
+git_repo_db_path = os.getenv("HOME") + "/.config/git-repo.db"
+
+conn = sqlite3.connect(git_repo_db_path)
+conn.execute("create table if not exists 'local-repo' (path text unique)")
+
+cursor = conn.execute("select path from 'local-repo' order by path")
+for row in cursor:
+    path = row[0]
+    if os.system("git -C " + path +
+                 " rev-parse --show-toplevel &> /dev/null"):
+        git_repo_remove.append(path)
+    else:
+        git_repo_paths.append(path)
+cursor.close()
+
+conn.executemany("delete from 'local-repo' where path = ?",
+                 [(path,) for path in git_repo_remove])
+conn.close()
+
+max_length = max([len(path) for path in git_repo_paths])
+splitter = "-" * (os.get_terminal_size().columns)
+
+
+def show_git_repo(path: str):
+    print(splitter)
+    print("Git repo : " + path + " from ", end="")
+    stdout.flush()
+    os.system("git -C " + path + " remote -v | grep fetch | awk '{print $2}'")
+    if os.system("git -C " + path + " pull"):
+        print("\rAborted.")
+        try:
+            sleep(2)
+        except KeyboardInterrupt:
+            print("\rAborted for all.")
+            exit(1)
+
+
+parser = argparse.ArgumentParser(description="Update git repos")
+
+parser.parse_args()
+
+for path in git_repo_paths:
+    show_git_repo(path)

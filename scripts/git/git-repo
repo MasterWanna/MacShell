@@ -1,0 +1,83 @@
+#!python3
+
+import os
+import sqlite3
+import argparse
+from typing import Iterable
+
+git_repo_paths = []
+git_repo_remove = []
+git_repo_db_path = os.getenv("HOME") + "/.config/git-repo.db"
+
+conn = sqlite3.connect(git_repo_db_path)
+conn.execute("create table if not exists 'local-repo' (path text unique)")
+
+cursor = conn.execute("select path from 'local-repo'")
+for row in cursor:
+    path = row[0]
+    if os.system("git -C " + path +
+                 " rev-parse --show-toplevel &> /dev/null"):
+        git_repo_remove.append(path)
+    else:
+        git_repo_paths.append(path)
+cursor.close()
+
+# Doc for argparse : https://docs.python.org/3/library/argparse.html#the-add-argument-method
+
+parser = argparse.ArgumentParser(description="Add or remove git repos")
+
+parser.add_argument("-r", "--remove", action="store_true")
+parser.add_argument("repos", type=str,
+                    nargs="+", help="repo paths")
+
+args = parser.parse_args()
+
+remove = args.remove
+repos = args.repos
+
+realpath_repos = []
+for path in repos:
+    realpath = os.path.realpath(path)
+    pipe = os.popen("git -C " + realpath +
+                    " rev-parse --show-toplevel 2> /dev/null")
+    res = pipe.read().strip()
+    returncode = pipe.close()
+    if returncode:
+        print("Git repo : " + realpath + " not found.")
+        exit(1)
+    else:
+        realpath_repos.append(res)
+
+
+def to_string(strs: Iterable[str]) -> str:
+    return ", ".join(sorted(strs))
+
+
+if remove:
+    remove_list = []
+    for realpath in realpath_repos:
+        if realpath in git_repo_paths:
+            remove_list.append(realpath)
+        else:
+            print("Git repo : " + realpath + " not found.")
+            exit(1)
+    conn.executemany("delete from 'local-repo' where path = ?",
+                     [(path,) for path in remove_list])
+    conn.executemany("delete from 'local-repo' where path = ?",
+                     [(path,) for path in git_repo_remove])
+    print("Removed : " + to_string(remove_list))
+else:
+    add_list = []
+    for realpath in realpath_repos:
+        if os.path.isdir(realpath + "/.git"):
+            if realpath not in git_repo_paths:
+                add_list.append(realpath)
+            else:
+                print("Git repo : " + realpath + " already added.")
+                exit(1)
+    conn.executemany("insert into 'local-repo' values (?)",
+                     [(path,) for path in add_list])
+    print("Added : " + to_string(add_list))
+
+conn.commit()
+conn.close()
