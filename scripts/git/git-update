@@ -12,6 +12,7 @@ git_repo_db_path = os.getenv("HOME") + "/.config/git-repo.db"
 
 conn = sqlite3.connect(git_repo_db_path)
 conn.execute("create table if not exists 'local-repo' (path text unique)")
+conn.commit()
 
 cursor = conn.execute("select path from 'local-repo' order by path")
 for row in cursor:
