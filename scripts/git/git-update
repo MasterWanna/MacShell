@@ -32,7 +32,7 @@ max_length = max([len(path) for path in git_repo_paths])
 splitter = "-" * (os.get_terminal_size().columns)
 
 
-def show_git_repo(path: str):
+def show_git_repo(path: str) -> None:
     print(splitter)
     print("Git repo : " + path + " from ", end="")
     stdout.flush()

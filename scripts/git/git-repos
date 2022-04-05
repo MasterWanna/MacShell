@@ -30,7 +30,7 @@ conn.close()
 max_length = max([len(path) for path in git_repo_paths])
 
 
-def update_git_repo(path: str):
+def update_git_repo(path: str) -> None:
     print(path.ljust(max_length) + " : ", end="")
     stdout.flush()
     os.system("git -C " + path + " remote -v | grep fetch | awk '{print $2}'")
