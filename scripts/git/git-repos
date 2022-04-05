@@ -1,4 +1,4 @@
-#!python3
+#!/usr/bin/python3
 
 import os
 import sqlite3
@@ -30,7 +30,7 @@ max_length = max([len(path) for path in git_repo_paths])
 
 
 def update_git_repo(path: str):
-    print(path.ljust(max_length + 1) + ":", end="")
+    print(path.ljust(max_length) + " : ", end="")
     stdout.flush()
     os.system("git -C " + path + " remote -v | grep fetch | awk '{print $2}'")
 
