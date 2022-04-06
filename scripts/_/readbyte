@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+
+import argparse
+from sys import stdin
+from typing import TextIO
+from utils import *
+
+# Doc for argparse : https://docs.python.org/3/library/argparse.html#the-add-argument-method
+
+parser = argparse.ArgumentParser(description="Read byte code from file")
+
+parser.add_argument("-b", "--base", type=int, default=16)
+parser.add_argument("-i", "--ignore-linesep", action="store_true")
+parser.add_argument("files", type=str,
+                    nargs="*", help="file to read")
+
+args = parser.parse_args()
+
+base = args.base
+no_linesep = args.ignore_linesep
+files = args.files
+
+max_len = byte_max_len(base)
+
+
+def read_file(inputstream: TextIO) -> None:
+    global byte
+    try:
+        while True:
+            byte = inputstream.read(1)[0]
+            if not no_linesep and byte == line_sep:
+                print()
+            else:
+                print(format_int_base(byte, base).rjust(max_len, "0"), end=" ")
+    except (EOFError, IndexError):
+        pass
+
+
+if len(files) == 0:
+    read_file(stdin.buffer)
+else:
+    for path in files:
+        with open(path, "rb") as f:
+            read_file(f)
+
+if no_linesep or byte != line_sep:
+    print()

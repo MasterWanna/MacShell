@@ -1,0 +1,29 @@
+#!/usr/bin/python3
+
+import sqlite3
+import argparse
+from utils import *
+
+parser = argparse.ArgumentParser(description="Initialize brew formula root nodes")
+
+args = parser.parse_args()
+
+conn = sqlite3.connect(brew_root_db_path)
+conn.execute("drop table if exists 'root-nodes'")
+conn.execute("create table if not exists 'root-nodes' (name text unique)")
+conn.commit()
+
+all_nodes = read_all_nodes()
+dependencies = read_dependencies()
+
+for deps in dependencies.values():
+    for dep in deps:
+        if dep in all_nodes:
+            all_nodes.remove(dep)
+
+conn.executemany("insert into 'root-nodes' values (?)",
+                 [(node,) for node in all_nodes])
+conn.commit()
+conn.close()
+
+print("Init root nodes into " + brew_root_db_path)

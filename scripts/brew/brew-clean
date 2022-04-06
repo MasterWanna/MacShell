@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+
+import sqlite3
+import argparse
+from utils import *
+
+parser = argparse.ArgumentParser(description="Remove redundant brew formula")
+
+args = parser.parse_args()
+
+conn = sqlite3.connect(brew_root_db_path)
+conn.execute("create table if not exists 'root-nodes' (name text unique)")
+conn.commit()
+
+root_nodes = read_root_nodes(conn)
+all_nodes = read_all_nodes()
+dependencies = read_dependencies()
+
+auto_clean_root_nodes(conn, root_nodes, all_nodes)
+
+conn.close()
+
+
+def remove_index(name: str):
+    if name in all_nodes:
+        all_nodes.remove(name)
+        for sub in dependencies[name]:
+            remove_index(sub)
+
+
+for root in root_nodes:
+    remove_index(root)
+
+if len(all_nodes) > 0:
+    print("Cleaning nodes : " + to_string(all_nodes))
+    print("Command : ", end="")
+    run_command("brew uninstall --formula " + to_string(all_nodes, " "))
+else:
+    print("Nothing to uninstall")

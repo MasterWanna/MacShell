@@ -4,13 +4,7 @@ function rp() { python3 -c "import os,sys; print(os.path.realpath(sys.argv[1]))"
 
 cd $(dirname $(dirname $(rp $0)))
 
-if [ -f build ]
-then
-    echo Please check \"build\" file and remove it
-    exit 1
-fi
-
-file=$PWD/setup/.install
+file=./setup/.install
 if [[ -f $file ]]
 then   
     if [[ ! "$(getopt y "$@")" =~ ^.*[Yy].*$ ]]
@@ -33,12 +27,17 @@ fi
 
 echo "Installing ..."
 
-cmake -B build -Wno-dev . > /dev/null
-make -C build > /dev/null
+mkdir bin
+cp scripts/*/* ./bin
 
-ls bin > setup/.install
-sudo cp bin/* /usr/local/bin
+if [ -f ./bin/__init__.py ]
+then
+    rm ./bin/__init__.py
+fi
 
-rm -r bin build
+ls bin > ./setup/.install
+sudo cp ./bin/* /usr/local/bin
+
+rm -r bin
 
 echo Install into /usr/local/bin successfully
