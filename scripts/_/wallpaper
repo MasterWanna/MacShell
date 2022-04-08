@@ -11,5 +11,9 @@ mkdir -p $HOME/OneDrive/Wallpapers/filelist
 
 for file in $files
 do
-    ls $HOME/OneDrive/Wallpapers/$file > "$HOME/OneDrive/Wallpapers/filelist/$file.txt"
+    filelist=$(ls -1 $HOME/OneDrive/Wallpapers/$file)
+    if [[ $filelist != "" ]]
+    then
+        echo "$filelist" > "$HOME/OneDrive/Wallpapers/filelist/$file.txt"
+    fi
 done    
