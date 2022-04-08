@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-if [ -f $HOME/OneDrive/Wallpapers/filelist ]
+if [ -e $HOME/OneDrive/Wallpapers/filelist ]
 then
     rm -rf $HOME/OneDrive/Wallpapers/filelist
 fi
