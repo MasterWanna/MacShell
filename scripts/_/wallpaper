@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+if [ -f $HOME/OneDrive/Wallpapers/filelist ]
+then
+    rm -rf $HOME/OneDrive/Wallpapers/filelist
+fi
+
+files=($(ls $HOME/OneDrive/Wallpapers))
+
+mkdir -p $HOME/OneDrive/Wallpapers/filelist
+
+for file in $files
+do
+    ls $HOME/OneDrive/Wallpapers/$file > "$HOME/OneDrive/Wallpapers/filelist/$file.txt"
+done    
