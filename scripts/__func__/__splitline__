@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+
+import sys
+from utils import get_split_line
+
+
+if len(sys.argv) == 1:
+    print(get_split_line())
+elif len(sys.argv) == 2:
+    print(get_split_line(text=sys.argv[1]))
+else:
+    raise ValueError("Too many arguments")

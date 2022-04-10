@@ -1,18 +1,17 @@
 #!/bin/zsh
 
-echo '------------------ brew update -------------------'
+__splitline__ "brew update"
 brew update || exit
-echo '------------------ brew upgrade ------------------'
+__splitline__ "brew upgrade"
 brew upgrade
-echo '----- brew upgrade `brew list --cask` --cask -----'
-brew upgrade `brew list --cask` --cask
+__splitline__ 'brew upgrade $(brew list --cask) --cask'
+brew upgrade $(brew list --cask) --cask
 
-echo '------------------ conda update ------------------'
-echo 'Environment : base'
+__splitline__ "conda update"
+__splitline__ "base"
 conda update -n base --all -y
 environ=$(conda env list | grep py3 | awk '{print $1}')
-echo "Environment : $environ"
-echo
+__splitline__ "$environ"
 conda update -n $environ --all -y
-echo '------------------ conda clean -------------------'
+__splitline__ "conda clean"
 conda clean -a -y

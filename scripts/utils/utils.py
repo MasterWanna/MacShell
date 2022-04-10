@@ -1,5 +1,6 @@
 import math
 import os
+import re
 from typing import Dict, Iterable, List, Set, Tuple, Union
 from sqlite3 import Connection
 
@@ -11,12 +12,28 @@ char_A = b'A'[0]
 char_0 = b'0'[0]
 
 
+def get_terminal_width() -> int:
+    return os.get_terminal_size().columns
+
+
 def get_realpath(path: str) -> str:
     return os.path.realpath(path)
 
 
-def to_string(strs: Iterable[str], splitter: str = ", ") -> str:
-    return splitter.join(sorted(strs))
+def to_string(strs: Iterable[str], splitter: str = ", ", sort: bool = True) -> str:
+    if sort:
+        return splitter.join(sorted(strs))
+    else:
+        return splitter.join(strs)
+
+
+def string_expand(string: str, length: int) -> str:
+    str_len = len(string)
+
+    quotient = int(length / str_len)
+    remainder = length % str_len
+
+    return string * quotient + string[:remainder]
 
 
 def run_command_s(cmd: str) -> int:
@@ -37,10 +54,49 @@ def read_command(cmd: str) -> Tuple[int, str]:
     return (pipe.close(), res)
 
 
-def get_split_line(splitter: str = '-') -> str:
-    quotient = int(os.get_terminal_size().columns / len(splitter))
-    remainder = os.get_terminal_size().columns % len(splitter)
-    return splitter * quotient + splitter[:remainder]
+def get_split_line(splitter: str = '-', text: str = None, length: int = get_terminal_width()) -> str:
+    if len(splitter) == 0:
+        raise ValueError("Splitter can't be empty.")
+
+    if text is None:
+        quotient = int(length / len(splitter))
+        remainder = length % len(splitter)
+
+        return splitter * quotient + splitter[:remainder]
+    else:
+        textarr = re.split(r'\s+', text)
+
+        if len(textarr) > 0 and len(textarr[0]) == 0:
+            textarr.pop(0)
+        if len(textarr) > 0 and len(textarr[-1]) == 0:
+            textarr.pop(-1)
+
+        if len(textarr) == 0:
+            return get_split_line(splitter, None)
+
+        string = to_string(textarr, " ", False)
+
+        str_length = len(string)
+        if str_length + 4 > length:
+            raise ValueError("Text too long : " + string)
+
+        remaining = length - str_length - 2
+        splitter_length = len(splitter)
+        left = int(remaining / 2)
+        if remaining < splitter_length:
+            return splitter[:left] + " " + string + " " + splitter[left:remaining]
+
+        right = remaining - left
+
+        quotient_l = int(left / len(splitter))
+        remainder_l = left % len(splitter)
+
+        rr = len(splitter) - remainder_l
+
+        quotient_r = int((right - rr) / splitter_length)
+        remainder_r = (right - rr) % splitter_length
+
+        return splitter * quotient_l + splitter[:remainder_l] + " " + string + " " + splitter[remainder_l:] + splitter * quotient_r + splitter[:remainder_r]
 
 
 def byte_max_len(base: int) -> int:

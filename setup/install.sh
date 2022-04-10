@@ -27,6 +27,11 @@ fi
 
 echo "Installing ..."
 
+if [ -d ./scripts/utils/__pycache__ ]
+then
+    rm -rf ./scripts/utils/__pycache__
+fi
+
 mkdir bin
 cp scripts/*/* ./bin
 
