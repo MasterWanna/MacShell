@@ -69,11 +69,13 @@ do
         echo ${SONG}/$i >> ${SONG_F2K}
     fi
 done
+echo "Song playlist     : ${SONG_F2K}"
 
 echo "#" > ${MUSIC_F2K}
 for i in `ls -1 ${MUSIC}/`
 do
     echo ${MUSIC}/$i >> ${MUSIC_F2K}
 done
+echo "Music playlist    : ${MUSIC_F2K}"
 
 IFS=$OLDIFS
