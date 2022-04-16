@@ -1,0 +1,98 @@
+#!/usr/bin/python3
+
+
+import argparse
+import configparser
+import glob
+import os
+import shutil
+import sys
+import termios
+import tty
+
+
+def getchar() -> str:
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Install shell script")
+    parser.add_argument('-y', '--yes', action='store_true',
+                        help='uninstall shell script if already installed without confirmation')
+
+    args = parser.parse_args()
+
+    if os.getuid() != 0:
+        print('This script must be run as root.')
+        exit(1)
+
+    os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    file = "./setup/.install"
+
+    if os.path.isdir(file):
+        print("Error : {} is a directory.".format(file))
+        exit(1)
+    elif os.path.isfile(file):
+        if not args.yes:
+            print(
+                "Binary and Script are already installed. Uninstall them first.\nDo you want to continue? Y/[N]: ", end="")
+            if getchar().upper() != "Y":
+                print("Aborted.")
+                exit(1)
+
+        os.system("./setup/uninstall")
+
+    print("Installing...")
+
+    if os.path.isdir("./scripts/utils/__pycache__"):
+        shutil.rmtree("./scripts/utils/__pycache__")
+
+    if os.path.isdir("./bin"):
+        shutil.rmtree("./bin")
+
+    os.mkdir("./bin")
+
+    for file in glob.glob("./scripts/*/*"):
+        if os.path.isfile(file):
+            shutil.copy(file, "./bin/{}".format(os.path.basename(file)))
+
+    if os.path.isfile("./bin/__init__.py"):
+        os.remove("./bin/__init__.py")
+
+    if os.path.isfile("./setup/alias.cfg"):
+        config = configparser.ConfigParser()
+        config.read("./setup/alias.cfg")
+        alias = config['alias']
+
+        for key in alias:
+            value = alias[key]
+            if os.path.isfile("./bin/{}".format(value)) and not os.path.isfile("./bin/{}".format(key)):
+                shutil.copy("./bin/{}".format(value),
+                            "./bin/{}".format(key))
+            else:
+                print("Error: ./bin/{} does not exist or ./bin/{} already exist.".format(
+                    value, key))
+                exit(1)
+
+    for shell in os.listdir("./bin"):
+        if os.path.exists("/usr/local/bin/{}".format(shell)):
+            print("Error: /usr/local/bin/{} already exist.".format(shell))
+            exit(1)
+
+    with open("./setup/.install", "w") as install:
+        for shell in os.listdir("./bin"):
+            install.write("{}\n".format(shell))
+
+            shutil.copy("./bin/{}".format(shell),
+                        "/usr/local/bin/{}".format(shell))
+
+    shutil.rmtree("./bin")
+    print("Install into /usr/local/bin successfully")

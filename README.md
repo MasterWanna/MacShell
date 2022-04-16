@@ -1,2 +1,2 @@
 # MacShell
-Binary and Script for Mac
+Shell script for Mac

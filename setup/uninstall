@@ -1,0 +1,35 @@
+#!/usr/bin/python3
+
+import argparse
+import os
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Uninstall shell script")
+
+    args = parser.parse_args()
+
+    if os.getuid() != 0:
+        print('This script must be run as root.')
+        exit(1)
+
+    os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+    file = "./setup/.install"
+
+    if os.path.isdir(file):
+        print("Error : " + file + " is a directory.")
+        exit(1)
+    elif os.path.isfile(file):
+        print("Uninstalling ...")
+
+        with open(file, "r") as install:
+            for line in install.readlines():
+                installed = line.strip()
+                os.remove("/usr/local/bin/" + installed)
+        os.remove(file)
+
+        print("Uninstall from /usr/local/bin successfully.")
+    else:
+        print("Error : " + file + " does not exist.")
+        exit(1)
