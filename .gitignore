@@ -10,5 +10,8 @@
 # vscode
 .vscode/
 
+# set alias initial state
+/setup/alias.cfg
+
 # To be done
 /temp/
