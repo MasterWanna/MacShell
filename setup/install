@@ -101,4 +101,4 @@ if __name__ == '__main__':
                         "/usr/local/bin/{}".format(shell))
 
     shutil.rmtree("./bin")
-    print("Install into /usr/local/bin successfully")
+    print("Install into /usr/local/bin successfully.")

@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+git diff --cached --name-status
