@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
+import argparse
 import os
 import sqlite3
-import argparse
+
 from utils import *
 
 parser = argparse.ArgumentParser(description="Show brew formula root nodes")

@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
-import sqlite3
 import argparse
+import sqlite3
+
 from utils import *
 
 # Doc for argparse : https://docs.python.org/3/library/argparse.html#the-add-argument-method

@@ -1,11 +1,13 @@
 #!/usr/bin/python3
 
 import argparse
-from sys import stdin
+import sys
 from typing import TextIO
+
 from utils import *
 
 # Doc for argparse : https://docs.python.org/3/library/argparse.html#the-add-argument-method
+
 
 parser = argparse.ArgumentParser(description="Read byte code from file")
 
@@ -37,7 +39,7 @@ def read_file(inputstream: TextIO) -> None:
 
 
 if len(files) == 0:
-    read_file(stdin.buffer)
+    read_file(sys.stdin.buffer)
 else:
     for path in files:
         with open(path, "rb") as f:

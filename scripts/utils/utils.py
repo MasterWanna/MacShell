@@ -1,8 +1,9 @@
 import math
 import os
 import re
-from typing import Dict, Iterable, List, Set, Tuple, Union
 from sqlite3 import Connection
+from typing import Dict, Iterable, List, Set, Tuple, Union
+
 
 # utils
 

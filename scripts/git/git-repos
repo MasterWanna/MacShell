@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 
-import sqlite3
 import argparse
-from sys import stdout
+import sqlite3
+import sys
+
 from utils import *
 
 parser = argparse.ArgumentParser(description="Show git repos")
@@ -25,7 +26,7 @@ max_length = max([len(path) for path in git_repo_paths])
 
 def update_git_repo(path: str) -> None:
     print(path.ljust(max_length) + " : ", end="")
-    stdout.flush()
+    sys.stdout.flush()
     run_command_s("git -C " + path +
                   " remote -v | grep fetch | awk '{print $2}'")
 

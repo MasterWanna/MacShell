@@ -1,9 +1,10 @@
 #!/usr/bin/python3
 
-import sqlite3
 import argparse
-from sys import stdout
-from time import sleep
+import sqlite3
+import sys
+import time
+
 from utils import *
 
 parser = argparse.ArgumentParser(description="Update git repos")
@@ -25,13 +26,13 @@ split_line = get_split_line()
 def show_git_repo(path: str) -> None:
     print(split_line)
     print("Git repo : " + path + " from ", end="")
-    stdout.flush()
+    sys.stdout.flush()
     run_command_s("git -C " + path +
                   " remote -v | grep fetch | awk '{print $2}'")
     if run_command_s("git -C " + path + " pull"):
         print("\rAborted.")
         try:
-            sleep(2)
+            time.sleep(2)
         except KeyboardInterrupt:
             print("\rAborted for all.")
             exit(1)

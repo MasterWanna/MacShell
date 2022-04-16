@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 
-import sqlite3
 import argparse
+import sqlite3
+
 from utils import *
 
 parser = argparse.ArgumentParser(description="Initialize brew formula root nodes")
