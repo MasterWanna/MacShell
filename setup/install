@@ -4,7 +4,7 @@
 #                                   alias.cfg                                  #
 # ---------------------------------------------------------------------------- #
 # Require section header [alias]
-# A=B mean command A is the same as command B 
+# A=B mean command A is the same as command B
 # ---------------------------------------------------------------------------- #
 
 import argparse
@@ -48,8 +48,8 @@ if __name__ == '__main__':
         exit(1)
     elif os.path.isfile(file):
         if not args.yes:
-            print(
-                "Binary and Script are already installed. Uninstall them first.\nDo you want to continue? Y/[N]: ", end="")
+            print("Script is already installed. Uninstall them first.")
+            print("Do you want to continue? Y/[N]: ", end="")
             if getchar().upper() != "Y":
                 print("Aborted.")
                 exit(1)

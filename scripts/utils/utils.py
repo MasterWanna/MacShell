@@ -21,7 +21,7 @@ def get_realpath(path: str) -> str:
     return os.path.realpath(path)
 
 
-def to_string(strs: Iterable[str], splitter: str = ", ", sort: bool = True) -> str:
+def to_string(strs: Iterable[str], splitter: str = ", ", sort: bool = False) -> str:
     if sort:
         return splitter.join(sorted(strs))
     else:
@@ -75,7 +75,7 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = get_term
         if len(textarr) == 0:
             return get_split_line(splitter, None)
 
-        string = to_string(textarr, " ", False)
+        string = to_string(textarr, " ")
 
         str_length = len(string)
         if str_length + 4 > length:
@@ -138,7 +138,7 @@ def auto_clean_root_nodes(conn: Connection, root_nodes: Union[List[str], Set[str
     remove_list = [node for node in root_nodes if node not in all_nodes]
 
     if len(remove_list) > 0:
-        print("Auto clean index : " + to_string(remove_list))
+        print("Auto clean index : " + to_string(remove_list, sort=True))
         conn.executemany("delete from 'root-nodes' where name = ?",
                          [(node,) for node in remove_list])
         conn.commit()
@@ -171,7 +171,7 @@ def read_dependencies() -> Dict[str, List[str]]:
 
 
 def check_formula_available(name: List[str]) -> int:
-    return run_command_s("brew info --formula " + to_string(name, " ") + " > /dev/null")
+    return run_command_s("brew info --formula " + to_string(name, " ", True) + " > /dev/null")
 
 
 # git
@@ -221,7 +221,7 @@ def classify_repos(conn: Connection) -> List[str]:
             git_repo_paths.append(path)
 
     if len(git_repo_remove) > 0:
-        print("Remove non-existent git repo : " + to_string(git_repo_remove))
+        print("Remove non-existent git repo : " + to_string(git_repo_remove, sort=True))
         conn.executemany("delete from 'local-repo' where path = ?",
                          [(path,) for path in git_repo_remove])
         conn.commit()

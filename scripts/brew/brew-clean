@@ -33,8 +33,8 @@ for root in root_nodes:
     remove_index(root)
 
 if len(all_nodes) > 0:
-    print("Cleaning nodes : " + to_string(all_nodes))
+    print("Cleaning nodes : " + to_string(all_nodes, sort=True))
     print("Command : ", end="")
-    run_command("brew uninstall --formula " + to_string(all_nodes, " "))
+    run_command("brew uninstall --formula " + to_string(all_nodes, " ", True))
 else:
     print("Nothing to uninstall")
