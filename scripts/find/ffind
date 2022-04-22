@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+find . -name '*' -type f -exec grep -Hn "$@" {} \;

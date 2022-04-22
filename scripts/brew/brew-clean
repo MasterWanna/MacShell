@@ -5,6 +5,7 @@ import sqlite3
 
 from utils import *
 
+
 parser = argparse.ArgumentParser(description="Remove redundant brew formula")
 
 args = parser.parse_args()

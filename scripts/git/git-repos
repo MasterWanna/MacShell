@@ -6,6 +6,7 @@ import sys
 
 from utils import *
 
+
 parser = argparse.ArgumentParser(description="Show git repos")
 
 parser.parse_args()
