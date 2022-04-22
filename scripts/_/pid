@@ -1,6 +1,11 @@
 #!/usr/bin/python3
 
+import argparse
 import os
 
+
+parser = argparse.ArgumentParser(description="Get pid")
+
+args = parser.parse_args()
 
 print(os.getppid())

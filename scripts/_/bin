@@ -1,16 +1,23 @@
-#!/bin/zsh
+#!/usr/bin/python3
 
-function bp() { 
-    bin_path=$(command -v $1)
-    if [[ $? == 0 ]]
-    then
-        echo "$bin_path"
-    else
-        realpath "$1"
-    fi
-}
+import argparse
+import shutil
 
-for i in "$@"
-do
-    bp $i
-done
+from utils import get_realpath
+
+
+parser = argparse.ArgumentParser(description="Get realpath of files")
+
+parser.add_argument("path", type=str,
+                    nargs="*", help="paths")
+
+args = parser.parse_args()
+
+path = args.path
+
+for p in path:
+    bin_path = shutil.which(p)
+    if bin_path:
+        print(bin_path)
+    else:
+        print(get_realpath(p))

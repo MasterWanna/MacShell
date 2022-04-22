@@ -1,13 +1,19 @@
 #!/usr/bin/python3
 
+import argparse
 import sys
 
 from utils import get_split_line
 
 
-if len(sys.argv) == 1:
-    print(get_split_line())
-elif len(sys.argv) == 2:
-    print(get_split_line(text=sys.argv[1]))
-else:
-    raise ValueError("Too many arguments")
+parser = argparse.ArgumentParser(description="Get realpath of files")
+
+parser.add_argument("-s", "--splitter", type=str, default='-', help="pattern for split line")
+parser.add_argument("-t", "--text", type=str, default=None, help="text in split line")
+
+args = parser.parse_args()
+
+splitter = args.splitter
+text = args.text
+
+print(get_split_line(splitter, text))

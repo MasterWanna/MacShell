@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+find . -regex "$@" -exec rm {} \;

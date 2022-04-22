@@ -1,9 +1,0 @@
-#!/bin/zsh
-
-command -v conda > /dev/null
-if [[ $? == 0 ]]
-then
-    conda list | grep -v "#" | awk '{print $1}'
-else
-    pip list | egrep -v "Package|-------" | awk '{print $1}'
-fi
