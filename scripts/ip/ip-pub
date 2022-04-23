@@ -1,12 +1,15 @@
 #!python3
 
 import json
+
 try:
     import requests
 except ImportError:
     print("This script requires the 'requests' python libraries.")
     print("Please install them and try again.")
     exit(1)
+
 obj = requests.get('http://ipinfo.io').json()
 obj.pop('readme')
+
 print(json.dumps(obj, indent=2))

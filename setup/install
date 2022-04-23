@@ -7,7 +7,7 @@
 # A=B mean command A is the same as command B
 # ---------------------------------------------------------------------------- #
 
-import argparse
+from argparse import ArgumentParser
 import configparser
 import glob
 import os
@@ -29,7 +29,7 @@ def getchar() -> str:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Install shell script")
+    parser = ArgumentParser(description="Install shell script")
     parser.add_argument('-y', '--yes', action='store_true',
                         help='uninstall shell script if already installed without confirmation')
 

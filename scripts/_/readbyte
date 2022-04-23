@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import sys
 from typing import TextIO
 
 from utils import *
 
 
-parser = argparse.ArgumentParser(description="Read byte code from file")
+parser = ArgumentParser(description="Read byte code from file")
 
 parser.add_argument("-b", "--base", type=int, default=16)
 parser.add_argument("-i", "--ignore-linesep", action="store_true")

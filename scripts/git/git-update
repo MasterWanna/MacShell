@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import sqlite3
 import sys
 import time
@@ -8,12 +8,12 @@ import time
 from utils import *
 
 
-parser = argparse.ArgumentParser(description="Update git repos")
+parser = ArgumentParser(description="Update git repos")
 
 parser.parse_args()
 
 conn = sqlite3.connect(git_repo_db_path)
-conn.execute("create table if not exists 'local-repo' (path text unique)")
+conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
 conn.commit()
 
 git_repo_paths = classify_repos(conn)

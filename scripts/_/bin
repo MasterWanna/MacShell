@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import shutil
 
 from utils import get_realpath
 
 
-parser = argparse.ArgumentParser(description="Get realpath of files")
+parser = ArgumentParser(description="Get realpath of files")
 
 parser.add_argument("path", type=str,
                     nargs="*", help="paths")

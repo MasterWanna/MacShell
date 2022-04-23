@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import os
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Uninstall shell script")
+    parser = ArgumentParser(description="Uninstall shell script")
 
     args = parser.parse_args()
 

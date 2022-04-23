@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
+from argparse import ArgumentParser
 import sqlite3
-import argparse
 
 from utils import *
 
 
-parser = argparse.ArgumentParser(description="Add or remove git repos")
+parser = ArgumentParser(description="Add or remove git repos")
 
 parser.add_argument("-r", "--remove", action="store_true")
 parser.add_argument("repos", type=str,
@@ -18,7 +18,7 @@ remove = args.remove
 repos = args.repos
 
 conn = sqlite3.connect(git_repo_db_path)
-conn.execute("create table if not exists 'local-repo' (path text unique)")
+conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
 conn.commit()
 
 git_repo_paths = classify_repos(conn)
@@ -37,7 +37,7 @@ if remove:
             print("Git repo : " + realpath + " not found.")
             exit(1)
 
-    conn.executemany("delete from 'local-repo' where path = ?",
+    conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name),
                      [(path,) for path in remove_list])
     print("Removed : " + to_string(remove_list))
 else:
@@ -49,7 +49,7 @@ else:
             print("Git repo : " + realpath + " already added.")
             exit(1)
 
-    conn.executemany("insert into 'local-repo' values (?)",
+    conn.executemany("insert into '{}' values (?)".format(git_repo_table_name),
                      [(path,) for path in add_list])
     print("Added : " + to_string(add_list))
 

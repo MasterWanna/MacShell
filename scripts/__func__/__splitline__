@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import sys
 
 from utils import get_split_line
 
 
-parser = argparse.ArgumentParser(description="Get realpath of files")
+parser = ArgumentParser(description="Get realpath of files")
 
 parser.add_argument("-s", "--splitter", type=str, default='-', help="pattern for split line")
 parser.add_argument("-t", "--text", type=str, default=None, help="text in split line")

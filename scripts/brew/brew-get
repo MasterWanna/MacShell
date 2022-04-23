@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import sqlite3
 
 from utils import *
 
 
-parser = argparse.ArgumentParser(description="Set brew formula root nodes")
+parser = ArgumentParser(description="Set brew formula root nodes")
 
 parser.add_argument("formula", type=str,
                     nargs="+", help="brew formula name")
@@ -16,7 +16,7 @@ args = parser.parse_args()
 formula = args.formula
 
 conn = sqlite3.connect(brew_root_db_path)
-conn.execute("create table if not exists 'root-nodes' (name text unique)")
+conn.execute("create table if not exists '{}' (name text unique)".format(brew_root_table_name))
 conn.commit()
 
 root_nodes = read_root_nodes(conn)
@@ -33,7 +33,7 @@ if check_formula_available(formula):
     exit(1)
 
 print("Setting root nodes : " + to_string(formula))
-conn.executemany("insert into 'root-nodes' values (?)",
+conn.executemany("insert into '{}' values (?)".format(brew_root_table_name),
                  [(node,) for node in formula])
 conn.commit()
 conn.close()

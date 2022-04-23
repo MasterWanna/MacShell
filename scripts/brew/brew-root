@@ -1,18 +1,18 @@
 #!/usr/bin/python3
 
-import argparse
+from argparse import ArgumentParser
 import os
 import sqlite3
 
 from utils import *
 
 
-parser = argparse.ArgumentParser(description="Show brew formula root nodes")
+parser = ArgumentParser(description="Show brew formula root nodes")
 
 args = parser.parse_args()
 
 conn = sqlite3.connect(brew_root_db_path)
-conn.execute("create table if not exists 'root-nodes' (name text unique)")
+conn.execute("create table if not exists '{}' (name text unique)".format(brew_root_table_name))
 conn.commit()
 
 root_nodes = read_root_nodes(conn)
