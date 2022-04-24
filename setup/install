@@ -95,7 +95,7 @@ if __name__ == '__main__':
 
     with open("./setup/.install", "w") as install:
         for shell in os.listdir("./bin"):
-            install.write("{}\n".format(shell))
+            install.write("{}{}".format(shell, os.linesep))
 
             shutil.copy("./bin/{}".format(shell),
                         "/usr/local/bin/{}".format(shell))

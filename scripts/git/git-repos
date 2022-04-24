@@ -2,15 +2,13 @@
 
 from argparse import ArgumentParser
 import sqlite3
-import sys
 
 from utils import *
 
 
 def update_git_repo(path: str) -> None:
-    print(path.ljust(max_length) + " : ", end="")
-    sys.stdout.flush()
-    run_command_s("git -C {} remote -v | grep fetch | awk '{print $2}'".format(path))
+    print(path.ljust(max_length) + " : ", end="", flush=True)
+    run_command_s("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
 
 
 if __name__ == "__main__":

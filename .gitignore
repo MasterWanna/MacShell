@@ -10,6 +10,9 @@
 # vscode
 .vscode/
 
+# idea
+.idea/
+
 # set alias initial state
 /setup/alias.cfg
 

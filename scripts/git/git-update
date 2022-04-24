@@ -2,7 +2,6 @@
 
 from argparse import ArgumentParser
 import sqlite3
-import sys
 import time
 
 from utils import *
@@ -10,9 +9,8 @@ from utils import *
 
 def show_git_repo(path: str) -> None:
     print(split_line)
-    print("Git repo : {} from ".format(path), end="")
-    sys.stdout.flush()
-    run_command_s("git -C {} remote -v | grep fetch | awk '{print $2}'".format(path))
+    print("Git repo : {} from ".format(path), end="", flush=True)
+    run_command_s("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
     if run_command_s("git -C {} pull".format(path)):
         print("\rAborted.")
         try:

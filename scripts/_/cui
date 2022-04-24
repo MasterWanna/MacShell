@@ -47,7 +47,7 @@ def encode_passwd(passwd: str) -> None:
         for i in range(pos, len(passwd)):
             f.write("{:02x} ".format(bytearr[i] * encoder % 256))
 
-        f.write("\n")
+        f.write(os.linesep)
 
 
 def decode_passwd() -> Union[str, None]:

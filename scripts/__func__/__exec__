@@ -1,0 +1,28 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+import os
+
+from utils import get_split_line, run_command_s, to_string
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Exec command with split line")
+    parser.add_argument("-t", "--text", type=str, default=None, help="text for exec command")
+    parser.add_argument("cmd", type=str, nargs='+', help="command")
+
+    args = parser.parse_args()
+    
+    text = args.text
+    cmd = args.cmd
+
+    splitline = get_split_line()
+
+    command = to_string(cmd, ' ')
+
+    text = text if text else command
+    
+    print(get_split_line(text=text))
+    
+    run_command_s(command)
+    
