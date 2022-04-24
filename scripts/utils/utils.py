@@ -3,7 +3,7 @@ import math
 import os
 import re
 from sqlite3 import Connection
-from typing import Any, Dict, Iterable, List, Set, Tuple, Type, Union
+from typing import Any, Iterable, List, Tuple, Type, Union
 
 # computation utils
 
@@ -131,6 +131,9 @@ class convent:
 
 
 # command line and terminal utils
+
+
+HOME = os.getenv("HOME")
 line_sep = bytes(os.linesep, encoding="UTF-8")[0]
 
 
@@ -232,10 +235,16 @@ def query_all(conn: Connection, table: str) -> Tuple[List[str], List[Tuple]]:
     return [des[0] for des in cursor.description], cursor.fetchall()
 
 
+# passwd
+
+
+passwd_path = "{}/.config/passwd".format(HOME)
+
+
 # git
 
 
-git_repo_db_path = os.getenv("HOME") + "/.config/git-repo.db"
+git_repo_db_path = "{}/.config/git-repo.db".format(HOME)
 git_repo_table_name = "local-repo"
 
 
@@ -256,8 +265,7 @@ def realpath_repo(repos: List[str]) -> Union[List[str], None]:
 
     for path in repos:
         realpath = get_realpath(path)
-        returncode, res = read_command("git -C " + realpath +
-                                       " rev-parse --show-toplevel 2> /dev/null")
+        returncode, res = read_command("git -C {} rev-parse --show-toplevel 2> /dev/null".format(realpath))
         if returncode:
             print("Git repo : " + realpath + " not found.")
             return None
@@ -268,15 +276,13 @@ def realpath_repo(repos: List[str]) -> Union[List[str], None]:
 
 
 def classify_repos(conn: Connection) -> List[str]:
-
     local_repos = read_local_repos(conn)
 
     git_repo_paths = []
     git_repo_remove = []
 
     for path in local_repos:
-        if run_command_s("git -C " + path +
-                         " rev-parse --show-toplevel &> /dev/null"):
+        if run_command_s("git -C {} rev-parse --show-toplevel &> /dev/null".format(path)):
             git_repo_remove.append(path)
         else:
             git_repo_paths.append(path)

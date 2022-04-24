@@ -7,30 +7,30 @@ import sys
 from utils import *
 
 
-parser = ArgumentParser(description="Show git repos")
-
-parser.parse_args()
-
-git_repo_paths = []
-git_repo_remove = []
-
-conn = sqlite3.connect(git_repo_db_path)
-conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
-conn.commit()
-
-git_repo_paths = classify_repos(conn)
-
-conn.close()
-
-max_length = max([len(path) for path in git_repo_paths])
-
-
 def update_git_repo(path: str) -> None:
     print(path.ljust(max_length) + " : ", end="")
     sys.stdout.flush()
-    run_command_s("git -C " + path +
-                  " remote -v | grep fetch | awk '{print $2}'")
+    run_command_s("git -C {} remote -v | grep fetch | awk '{print $2}'".format(path))
 
 
-for path in git_repo_paths:
-    update_git_repo(path)
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Show git repos")
+
+    parser.parse_args()
+
+    git_repo_paths = []
+    git_repo_remove = []
+
+    conn = sqlite3.connect(git_repo_db_path)
+    conn.execute("create table if not exists '{}' (path text unique)".format(
+        git_repo_table_name))
+    conn.commit()
+
+    git_repo_paths = classify_repos(conn)
+
+    conn.close()
+
+    max_length = max([len(path) for path in git_repo_paths])
+
+    for path in git_repo_paths:
+        update_git_repo(path)

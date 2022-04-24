@@ -4,8 +4,9 @@ from argparse import ArgumentParser
 import os
 
 
-parser = ArgumentParser(description="Get pid")
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get pid")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-print(os.getppid())
+    print(os.getppid())

@@ -5,31 +5,29 @@ import sqlite3
 import sys
 from utils import *
 
-if len(sys.argv) == 1:
-    sys.argv.append("-h")
+if __name__ == "__main__":
+    if len(sys.argv) == 1:
+        sys.argv.append("-h")
 
-if sys.argv[1] == "git":
-    sys.argv = "sqlite-sort -p {} -t local-repo -k path".format(git_repo_db_path).split(" ")
-elif sys.argv[1] == "brew":
-    sys.argv = "sqlite-sort -p {} -t root-node -k name".format(brew_root_db_path).split(" ")
+    if sys.argv[1] == "git":
+        sys.argv = "sqlite-sort -p {} -t local-repo -k path".format(git_repo_db_path).split(" ")
 
-parser = ArgumentParser(
-    description="Sort sqlite3 database by column value")
+    parser = ArgumentParser(
+        description="Sort sqlite3 database by column value")
 
-parser.add_argument("-p", "--path", type=str, required=True,
-                    help="sqlite3 database path")
-parser.add_argument("-t", "--table", type=str,
-                    required=True, help="table name")
-parser.add_argument("-k", "--key", type=str, required=True,
-                    nargs='+', help="column name")
+    parser.add_argument("-p", "--path", type=str, required=True,
+                        help="sqlite3 database path")
+    parser.add_argument("-t", "--table", type=str,
+                        required=True, help="table name")
+    parser.add_argument("-k", "--key", type=str, required=True,
+                        nargs='+', help="column name")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-path = args.path
-table = args.table
-key = args.key
+    path = args.path
+    table = args.table
+    key = args.key
 
-if __name__ == '__main__':
     conventer = convent(item=[(True, str, None), (False, boolean, False)])
 
     sort_keys = conventer(key)

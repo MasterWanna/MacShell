@@ -2,9 +2,7 @@
 
 if [[ $# == 0 ]]
 then
-    echo -n Usage:" "
-    cd /usr/local/bin
-    echo k-* | sed 's/ /, /g' | sed 's/-/ /g'
+    echo "Usage : $(cmds | grep "^s-" | __str__ -e)"
     exit 1
 fi
 

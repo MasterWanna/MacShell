@@ -6,18 +6,19 @@ import shutil
 from utils import get_realpath
 
 
-parser = ArgumentParser(description="Get realpath of files")
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get realpath of files")
 
-parser.add_argument("path", type=str,
-                    nargs="*", help="paths")
+    parser.add_argument("path", type=str,
+                        nargs="*", help="paths")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-path = args.path
+    path = args.path
 
-for p in path:
-    bin_path = shutil.which(p)
-    if bin_path:
-        print(bin_path)
-    else:
-        print(get_realpath(p))
+    for p in path:
+        bin_path = shutil.which(p)
+        if bin_path:
+            print(bin_path)
+        else:
+            print(get_realpath(p))

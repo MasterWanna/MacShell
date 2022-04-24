@@ -84,7 +84,7 @@ def check_passwd(pwd: str) -> bool:
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and (sys.argv[1] == "-r" or sys.argv[1] == "--remove"):
-        os.remove("{}/.config/passwd".format(os.getenv("HOME")))
+        os.remove(passwd_path)
         print("Password removed")
         exit(0)
 
