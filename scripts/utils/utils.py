@@ -232,61 +232,6 @@ def query_all(conn: Connection, table: str) -> Tuple[List[str], List[Tuple]]:
     return [des[0] for des in cursor.description], cursor.fetchall()
 
 
-# brew
-
-
-brew_root_db_path = os.getenv("HOME") + "/.config/brew-formula.db"
-brew_root_table_name = "root-node"
-
-
-# brew database
-
-
-def read_root_nodes(conn: Connection) -> List[str]:
-    cursor = conn.execute("select name from '{}'".format(brew_root_table_name))
-    return [row[0] for row in cursor.fetchall()]
-
-
-def auto_clean_root_nodes(conn: Connection, root_nodes: Union[List[str], Set[str]], all_nodes: Iterable[str]) -> List[str]:
-    remove_list = [node for node in root_nodes if node not in all_nodes]
-
-    if len(remove_list) > 0:
-        print("Auto clean index : " + to_string(remove_list, sort=True))
-        conn.executemany("delete from '{}' where name = ?".format(brew_root_table_name),
-                         [(node,) for node in remove_list])
-        conn.commit()
-
-        for node in remove_list:
-            root_nodes.remove(node)
-
-    return remove_list
-
-
-# brew cmdline
-
-
-def read_all_nodes() -> List[str]:
-    pipe = os.popen("brew list --formula")
-    lines = pipe.readlines()
-    pipe.close()
-
-    return [line.strip() for line in lines]
-
-
-def read_dependencies() -> Dict[str, List[str]]:
-    pipe = os.popen("brew deps --installed --formula")
-    lines = pipe.readlines()
-    pipe.close()
-
-    items = [line.strip().split(" ") for line in lines]
-
-    return {item[0].split('/')[-1][:-1] if '/' in item[0] else item[0][:-1]: item[1:] for item in items}
-
-
-def check_formula_available(name: List[str]) -> int:
-    return run_command_s("brew info --formula " + to_string(name, " ", True) + " > /dev/null")
-
-
 # git
 
 
@@ -298,7 +243,8 @@ git_repo_table_name = "local-repo"
 
 
 def read_local_repos(conn: Connection) -> List[str]:
-    cursor = conn.execute("select path from '{}' order by path".format(git_repo_table_name))
+    cursor = conn.execute(
+        "select path from '{}' order by path".format(git_repo_table_name))
     return [row[0] for row in cursor.fetchall()]
 
 
