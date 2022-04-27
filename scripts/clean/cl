@@ -1,37 +1,36 @@
-#!/bin/zsh
+#!/usr/bin/python3
 
-OLDIFS=$IFS
-IFS=$'\n'
+from argparse import ArgumentParser
+import glob
+import os
+import shutil
 
-for i in $@
-do
-    command -v cl-$i > /dev/null
 
-    if [[ $? == 0 ]]
-    then
-        cl-$i
-    else
-        if [ -f $i ]
-        then
-            rm -f $i
-        else
-            cd "$i"
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Clean directories")
 
-            if [[ $(ls | words) > 0 ]]
-            then 
-                rm -rf $(ls)
-            fi
+    parser.add_argument("path", type=str,
+                        nargs="*", help="paths")
 
-            if [[ $(ls -A | words) > 0 ]]
-            then 
-                rm -rf $(ls -A)
-            fi
+    args = parser.parse_args()
 
-            cd -
-        fi
-    fi
+    path = args.path
 
-    
-done
+    for p in path:
+        if shutil.which("cl-{}".format(p)):
+            os.system("cl-{}".format(p))
+        else:
+            if not os.path.isdir(p):
+                raise FileNotFoundError("{} is not a directory".format(p))
+            
+            for pp in glob.glob(os.path.join(p, "*")):
+                if os.path.isdir(pp):
+                    shutil.rmtree(pp)
+                else:
+                    os.remove(pp)
 
-IFS=$OLDIFS
+            for pp in glob.glob(os.path.join(p, ".*")):
+                if os.path.isdir(pp):
+                    shutil.rmtree(pp)
+                else:
+                    os.remove(pp)
