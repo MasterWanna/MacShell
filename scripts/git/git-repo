@@ -25,7 +25,7 @@ git_repo_paths = classify_repos(conn)
 
 realpath_repos = realpath_repo(repos)
 
-if realpath_repo == None:
+if realpath_repos == None:
     exit(1)
 
 if remove:
