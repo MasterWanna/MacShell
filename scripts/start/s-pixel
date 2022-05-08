@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+import glob
+import re
+
+from utils import format_int_base, get_filename, get_split_line, HOME, run_command_s
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Start Android Pixel")
+
+    parser.add_argument("-n", "--name", type=str, default=None, help="full name or part of name or regex of name")
+
+    args = parser.parse_args()
+
+    name = args.name
+
+    phones = [get_filename(phone) for phone in sorted(glob.glob("{}/.android/avd/*.avd".format(HOME)))]
+    
+    if name:
+        phones = [phone for phone in phones if re.search(name, phone)]
+
+    if len(phones) == 0:
+        raise FileNotFoundError("No avd found!")
+
+    if len(phones) == 1:
+        phone = phones[0]
+    else:
+        length = len(format_int_base(len(phones) - 1, 10))
+        print("Select avd:")
+        for i, phone in enumerate(phones):
+            print("{}. {}".format(str(i).rjust(length), phone))
+        
+        print("Enter number: ", end="", flush=True)
+        try:
+            phone = phones[int(input())]
+        except (IndexError, ValueError):
+            print("Invalid number!")
+            exit(1)
+        except KeyboardInterrupt:
+            print("\nAborted!")
+            exit(1)
+
+    print(get_split_line(text=phone))
+    run_command_s('export DYLD_LIBRARY_PATH="$HOME/Library/Android/sdk/emulator/lib64/qt/lib/:$HOME/Library/Android/sdk/emulator/lib64/:$DYLD_LIBRARY_PATH"; {}/Library/Android/sdk/emulator/qemu/darwin-aarch64/qemu-system-aarch64 -netdelay none -netspeed full -avd {}'.format(HOME, phone))

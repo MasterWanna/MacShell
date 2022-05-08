@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+# Recommend run as : source $(bin proxy-off)
+#               or : add to your ~/.zshrc as function
+
+unset http_proxy
+unset https_proxy

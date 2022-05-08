@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+rm -rf /Applications/QQ.app/Contents/MacOS/QQGuild.app

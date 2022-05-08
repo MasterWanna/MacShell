@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+import glob
+import os
+import shutil
+import sys
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Clean directories")
+
+    parser.add_argument("path", type=str,
+                        nargs="*", help="paths")
+
+    args = parser.parse_args()
+
+    path = args.path
+
+    cmd = sys.argv[0]
+
+    for p in path:
+        if shutil.which("{}-{}".format(cmd, p)):
+            os.system("{}-{}".format(cmd, p))
+        else:
+            if not os.path.exists(p):
+                raise FileNotFoundError("{} not found!".format(p))
+            
+            for pp in glob.glob(os.path.join(p, "*")):
+                if os.path.isdir(pp):
+                    shutil.rmtree(pp)
+                else:
+                    os.remove(pp)
+
+            for pp in glob.glob(os.path.join(p, ".*")):
+                if os.path.isdir(pp):
+                    shutil.rmtree(pp)
+                else:
+                    os.remove(pp)

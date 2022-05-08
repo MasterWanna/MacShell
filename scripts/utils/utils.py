@@ -1,12 +1,13 @@
 from __future__ import annotations
 import math
 import os
+from pathlib import Path
 import re
 from sqlite3 import Connection
 from typing import Any, Iterable, List, Tuple, Type, Union
 
 # computation utils
-os.lchmod
+
 
 char_A = b'A'[0]
 char_0 = b'0'[0]
@@ -134,7 +135,12 @@ class convent:
 
 
 HOME = os.getenv("HOME")
-line_sep = bytes(os.linesep, encoding="UTF-8")[0]
+linesep = os.linesep
+line_sep = bytes(linesep, encoding="UTF-8")[0]
+
+
+def get_filename(path: str) -> str:
+    return Path(path).stem
 
 
 def get_terminal_width() -> int:
@@ -265,7 +271,8 @@ def realpath_repo(repos: List[str]) -> Union[List[str], None]:
 
     for path in repos:
         realpath = get_realpath(path)
-        returncode, res = read_command("git -C {} rev-parse --show-toplevel 2> /dev/null".format(realpath))
+        returncode, res = read_command(
+            "git -C {} rev-parse --show-toplevel 2> /dev/null".format(realpath))
         if returncode:
             print("Git repo : " + realpath + " not found.")
             return None

@@ -1,36 +1,17 @@
-#!/usr/bin/python3
+#!/bin/zsh
 
-from argparse import ArgumentParser
-import glob
-import os
-import shutil
+if [[ $# == 0 ]]
+then
+    echo "Usage : $(cmds | grep "^cl-" | __str__ -n)"
+    exit 1
+fi
 
+command -v cl-$1 > /dev/null
 
-if __name__ == "__main__":
-    parser = ArgumentParser(description="Clean directories")
-
-    parser.add_argument("path", type=str,
-                        nargs="*", help="paths")
-
-    args = parser.parse_args()
-
-    path = args.path
-
-    for p in path:
-        if shutil.which("cl-{}".format(p)):
-            os.system("cl-{}".format(p))
-        else:
-            if not os.path.isdir(p):
-                raise FileNotFoundError("{} is not a directory".format(p))
-            
-            for pp in glob.glob(os.path.join(p, "*")):
-                if os.path.isdir(pp):
-                    shutil.rmtree(pp)
-                else:
-                    os.remove(pp)
-
-            for pp in glob.glob(os.path.join(p, ".*")):
-                if os.path.isdir(pp):
-                    shutil.rmtree(pp)
-                else:
-                    os.remove(pp)
+if [[ $? == 0 ]]
+then
+    cl-$@
+else
+    echo "cl-$1: command not found"
+    exit 1
+fi

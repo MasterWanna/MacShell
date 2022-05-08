@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+if [[ $# == 0 ]]
+then
+    echo "Usage : $(cmds | grep "^proxy-" | __str__ -n)"
+    exit 1
+fi
+
+command -v proxy-$1 > /dev/null
+
+if [[ $? == 0 ]]
+then
+    proxy-$@
+else
+    echo "proxy-$1: command not found"
+    exit 1
+fi

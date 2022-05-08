@@ -1,0 +1,3 @@
+#!/bin/zsh
+
+sqlite3 /private/var/folders/*/*/*/com.apple.dock.launchpad/db/db "delete from apps where title like 'epic%'"

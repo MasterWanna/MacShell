@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+echo "http_proxy: $http_proxy"
+echo "https_proxy: $https_proxy"

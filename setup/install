@@ -81,6 +81,15 @@ if __name__ == '__main__':
         config.read("./setup/alias.cfg")
         alias = config['alias']
 
+        for key in alias:
+            value = alias[key]
+
+            if '/' in key:
+                for item in binaries:
+                    if re.fullmatch(value, item):
+                        os.remove("./bin/{}".format(item))
+
+        binaries = sorted(os.listdir("./bin"))
         toalias = []
 
         for key in alias:
