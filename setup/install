@@ -11,6 +11,7 @@ from argparse import ArgumentParser
 import configparser
 import glob
 import os
+import re
 import shutil
 import sys
 import termios
@@ -81,12 +82,22 @@ if __name__ == '__main__':
         os.remove("./bin/__init__.py")
 
     if os.path.isfile("./setup/alias.cfg"):
+        binaries = sorted(os.listdir("./bin"))
+
         config = configparser.ConfigParser()
         config.read("./setup/alias.cfg")
         alias = config['alias']
 
+        toalias = []
+
         for key in alias:
             value = alias[key]
+
+            for item in binaries:
+                if re.fullmatch(value, item):
+                    toalias.append((key.format(item), item))
+
+        for key, value in toalias:
             if os.path.isfile("./bin/{}".format(value)) and not os.path.isfile("./bin/{}".format(key)):
                 shutil.copy("./bin/{}".format(value),
                             "./bin/{}".format(key))
