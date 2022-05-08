@@ -28,6 +28,10 @@ def getchar() -> str:
     return ch
 
 
+def changeexec(path: str):
+    os.chmod(path, os.stat(path).st_mode & 0o777 | 0o111)
+
+
 if __name__ == '__main__':
     parser = ArgumentParser(description="Install shell script")
     parser.add_argument('-y', '--yes', action='store_true',
@@ -49,8 +53,11 @@ if __name__ == '__main__':
     elif os.path.isfile(file):
         if not args.yes:
             print("Script is already installed. Uninstall them first.")
-            print("Do you want to continue? Y/[N]: ", end="")
-            if getchar().upper() != "Y":
+            print("Do you want to continue? Y/[N]: ", end="", flush=True)
+            option = getchar()
+            print()
+            if option.upper() != "Y":
+                print()
                 print("Aborted.")
                 exit(1)
 
@@ -97,6 +104,7 @@ if __name__ == '__main__':
         for shell in os.listdir("./bin"):
             install.write("{}{}".format(shell, os.linesep))
 
+            changeexec("./bin/{}".format(shell))
             shutil.copy("./bin/{}".format(shell),
                         "/usr/local/bin/{}".format(shell))
 
