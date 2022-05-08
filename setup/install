@@ -1,12 +1,5 @@
 #!/usr/bin/python3
 
-# ---------------------------------------------------------------------------- #
-#                                   alias.cfg                                  #
-# ---------------------------------------------------------------------------- #
-# Require section header [alias]
-# A=B mean command A is the same as command B
-# ---------------------------------------------------------------------------- #
-
 from argparse import ArgumentParser
 import configparser
 import glob
