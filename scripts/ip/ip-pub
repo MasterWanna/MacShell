@@ -1,5 +1,6 @@
-#!python3
+#!/usr/bin/python3
 
+from argparse import ArgumentParser
 import json
 
 try:
@@ -9,7 +10,12 @@ except ImportError:
     print("Please install them and try again.")
     exit(1)
 
-obj = requests.get('http://ipinfo.io').json()
-obj.pop('readme')
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get public IP address")
 
-print(json.dumps(obj, indent=2))
+    args = parser.parse_args()
+
+    obj = requests.get('http://ipinfo.io').json()
+    obj.pop('readme')
+
+    print(json.dumps(obj, indent=2))

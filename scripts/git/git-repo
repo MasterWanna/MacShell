@@ -6,52 +6,53 @@ import sqlite3
 from utils import *
 
 
-parser = ArgumentParser(description="Add or remove git repos")
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Add or remove git repos")
 
-parser.add_argument("-r", "--remove", action="store_true")
-parser.add_argument("repos", type=str,
-                    nargs="+", help="repo paths")
+    parser.add_argument("-r", "--remove", action="store_true")
+    parser.add_argument("repos", type=str,
+                        nargs="+", help="repo paths")
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-remove = args.remove
-repos = args.repos
+    remove = args.remove
+    repos = args.repos
 
-conn = sqlite3.connect(git_repo_db_path)
-conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
-conn.commit()
+    conn = sqlite3.connect(git_repo_db_path)
+    conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
+    conn.commit()
 
-git_repo_paths = classify_repos(conn)
+    git_repo_paths = classify_repos(conn)
 
-realpath_repos = realpath_repo(repos)
+    realpath_repos = realpath_repo(repos)
 
-if realpath_repos == None:
-    exit(1)
+    if realpath_repos == None:
+        exit(1)
 
-if remove:
-    remove_list = []
-    for realpath in realpath_repos:
-        if realpath in git_repo_paths:
-            remove_list.append(realpath)
-        else:
-            print("Git repo : " + realpath + " not found.")
-            exit(1)
+    if remove:
+        remove_list = []
+        for realpath in realpath_repos:
+            if realpath in git_repo_paths:
+                remove_list.append(realpath)
+            else:
+                print("Git repo : " + realpath + " not found.")
+                exit(1)
 
-    conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name),
-                     [(path,) for path in remove_list])
-    print("Removed : " + to_string(remove_list))
-else:
-    add_list = []
-    for realpath in realpath_repos:
-        if realpath not in git_repo_paths:
-            add_list.append(realpath)
-        else:
-            print("Git repo : " + realpath + " already added.")
-            exit(1)
+        conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name),
+                        [(path,) for path in remove_list])
+        print("Removed : " + to_string(remove_list))
+    else:
+        add_list = []
+        for realpath in realpath_repos:
+            if realpath not in git_repo_paths:
+                add_list.append(realpath)
+            else:
+                print("Git repo : " + realpath + " already added.")
+                exit(1)
 
-    conn.executemany("insert into '{}' values (?)".format(git_repo_table_name),
-                     [(path,) for path in add_list])
-    print("Added : " + to_string(add_list))
+        conn.executemany("insert into '{}' values (?)".format(git_repo_table_name),
+                        [(path,) for path in add_list])
+        print("Added : " + to_string(add_list))
 
-conn.commit()
-conn.close()
+    conn.commit()
+    conn.close()
