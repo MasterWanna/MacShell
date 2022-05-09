@@ -10,7 +10,8 @@ from utils import *
 def show_git_repo(path: str) -> None:
     print(split_line)
     print("Git repo : {} from ".format(path), end="", flush=True)
-    run_command_s("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
+    run_command_s(
+        "git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
     if run_command_s("git -C {} pull".format(path)):
         print("\rAborted.")
         try:
@@ -23,7 +24,12 @@ def show_git_repo(path: str) -> None:
 if __name__ == "__main__":
     parser = ArgumentParser(description="Update git repos")
 
-    parser.parse_args()
+    parser.add_argument("repos", type=str, default=[],
+                        nargs="*", help="repo paths with full path or partial path or regex path")
+
+    args = parser.parse_args()
+
+    repos = args.repos
 
     conn = sqlite3.connect(git_repo_db_path)
     conn.execute("create table if not exists '{}' (path text unique)".format(
@@ -33,6 +39,18 @@ if __name__ == "__main__":
     git_repo_paths = classify_repos(conn)
 
     conn.close()
+
+    if repos:
+        git_repo_paths_clone = git_repo_paths
+        git_repo_paths = []
+        for repo in repos:
+            for path in git_repo_paths_clone:
+                if re.search(repo, path, re.IGNORECASE) and path not in git_repo_paths:
+                    git_repo_paths.append(path)
+
+    if not git_repo_paths:
+        print("No git repo found.")
+        exit(1)
 
     max_length = max([len(path) for path in git_repo_paths])
     split_line = get_split_line()
