@@ -3,7 +3,7 @@
 __exec__ "brew update" || exit
 __exec__ "brew upgrade"
 __exec__ 'brew upgrade $(brew list --cask) --cask'
-__exec__ -t "clean brew cache" "cl $(brew --cache)"
+__exec__ -t "clean brew cache" "cl brew"
 
 __splitline__ -t "conda update"
 __exec__ -t "base" "conda update -n base --all -y"
@@ -11,4 +11,3 @@ __exec__ -t "base" "conda update -n base --all -y"
 environ=$(conda env list | grep py3 | awk '{print $1}')
 __exec__ -t "$environ" "conda update -n $environ --all -y"
 __exec__ -t "conda clean" "conda clean -a -y"
-
