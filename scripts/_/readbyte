@@ -1,11 +1,24 @@
 #!/usr/bin/python3
 
 from argparse import ArgumentParser
+from io import IOBase
 import sys
-from typing import TextIO
 
 from utils import *
 
+
+
+def read_file(inputstream: IOBase) -> None:
+    global byte
+    try:
+        while True:
+            byte = inputstream.read(1)[0]
+            if not no_linesep and byte == line_sep:
+                print()
+            else:
+                print(format_int_base(byte, base).rjust(max_len, "0"), end=" ")
+    except (EOFError, IndexError):
+        pass
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Read byte code from file")
@@ -22,19 +35,6 @@ if __name__ == "__main__":
     files = args.files
 
     max_len = byte_max_len(base)
-
-
-    def read_file(inputstream: TextIO) -> None:
-        global byte
-        try:
-            while True:
-                byte = inputstream.read(1)[0]
-                if not no_linesep and byte == line_sep:
-                    print()
-                else:
-                    print(format_int_base(byte, base).rjust(max_len, "0"), end=" ")
-        except (EOFError, IndexError):
-            pass
 
 
     if len(files) == 0:

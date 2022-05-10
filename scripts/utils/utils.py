@@ -73,7 +73,7 @@ class boolean:
         return str(self.value)
 
 
-class convent:
+class convert:
     def __init__(self, key_sep: str = ',', item_sep: str = ';', item: List[Tuple[bool, Type, Any]] = None, items: int = None) -> None:
         if item is None and items is None:
             raise ValueError('item or items must be specified')

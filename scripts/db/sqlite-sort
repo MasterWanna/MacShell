@@ -28,9 +28,9 @@ if __name__ == "__main__":
     table = args.table
     key = args.key
 
-    conventer = convent(item=[(True, str, None), (False, boolean, False)])
+    converter = convert(item=[(True, str, None), (False, boolean, False)])
 
-    sort_keys = conventer(key)
+    sort_keys = converter(key)
     sort_keys = tuple(reverse(key) if reversed else key
                       for key, reversed in sort_keys)
 
