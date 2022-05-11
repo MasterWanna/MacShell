@@ -13,7 +13,13 @@ char_0 = b'0'[0]
 
 
 def get_real_string_len(string: str) -> int:
-    return len(string.encode("GBK"))
+    length = 0
+    for ch in string:
+        if '\u1000' <= ch:
+            length += 2
+        else:
+            length += 1
+    return length
 
 
 def byte_max_len(base: int) -> int:
