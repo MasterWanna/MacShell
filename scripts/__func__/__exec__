@@ -1,9 +1,8 @@
 #!/usr/bin/python3
 
 from argparse import ArgumentParser
-import os
 
-from utils import get_split_line, run_command_s, to_string
+from utils import *
 
 
 if __name__ == "__main__":
@@ -13,8 +12,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     
-    text = args.text
-    cmd = args.cmd
+    text: str = args.text
+    cmd: List[str] = args.cmd
 
     splitline = get_split_line()
 

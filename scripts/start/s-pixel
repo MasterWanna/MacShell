@@ -2,9 +2,8 @@
 
 from argparse import ArgumentParser
 import glob
-import re
 
-from utils import format_int_base, get_filename, get_split_line, HOME, run_command_s
+from utils import *
 
 
 if __name__ == "__main__":
@@ -14,7 +13,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    name = args.name
+    name: str = args.name
 
     phones = [get_filename(phone) for phone in sorted(glob.glob("{}/.android/avd/*.avd".format(HOME)))]
     

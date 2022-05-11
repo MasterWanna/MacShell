@@ -12,6 +12,10 @@ char_A = b'A'[0]
 char_0 = b'0'[0]
 
 
+def get_real_string_len(string: str) -> int:
+    return len(string.encode("GBK"))
+
+
 def byte_max_len(base: int) -> int:
     return math.ceil(math.log(255, base))
 
@@ -43,6 +47,10 @@ line_sep = bytes(linesep, encoding="UTF-8")[0]
 
 def get_filename(path: str) -> str:
     return Path(path).stem
+
+
+def get_file_fullname(path: str) -> str:
+    return path.split(os.sep)[-1]
 
 
 def get_terminal_width() -> int:

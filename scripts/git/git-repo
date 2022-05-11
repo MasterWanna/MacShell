@@ -10,13 +10,12 @@ if __name__ == "__main__":
     parser = ArgumentParser(description="Add or remove git repos")
 
     parser.add_argument("-r", "--remove", action="store_true")
-    parser.add_argument("repos", type=str,
-                        nargs="+", help="repo paths")
+    parser.add_argument("repos", type=str, nargs="+", help="repo paths")
 
     args = parser.parse_args()
 
-    remove = args.remove
-    repos = args.repos
+    remove: bool = args.remove
+    repos: List[str] = args.repos
 
     conn = sqlite3.connect(git_repo_db_path)
     conn.execute("create table if not exists '{}' (path text unique)".format(git_repo_table_name))
@@ -38,8 +37,7 @@ if __name__ == "__main__":
                 print("Git repo : " + realpath + " not found.")
                 exit(1)
 
-        conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name),
-                        [(path,) for path in remove_list])
+        conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name), [(path,) for path in remove_list])
         print("Removed : " + to_string(remove_list))
     else:
         add_list = []
@@ -50,8 +48,7 @@ if __name__ == "__main__":
                 print("Git repo : " + realpath + " already added.")
                 exit(1)
 
-        conn.executemany("insert into '{}' values (?)".format(git_repo_table_name),
-                        [(path,) for path in add_list])
+        conn.executemany("insert into '{}' values (?)".format(git_repo_table_name), [(path,) for path in add_list])
         print("Added : " + to_string(add_list))
 
     conn.commit()

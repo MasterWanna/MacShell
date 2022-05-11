@@ -2,20 +2,20 @@
 
 from argparse import ArgumentParser
 import glob
-import os
 import shutil
 import sys
+
+from utils import *
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Clean directories")
 
-    parser.add_argument("path", type=str,
-                        nargs="*", help="paths")
+    parser.add_argument("path", type=str, nargs="*", help="paths")
 
     args = parser.parse_args()
 
-    path = args.path
+    path: List[str] = args.path
 
     cmd = sys.argv[0]
 

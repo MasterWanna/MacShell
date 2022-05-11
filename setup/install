@@ -28,8 +28,7 @@ def changeexec(path: str):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="Install shell script")
-    parser.add_argument('-y', '--yes', action='store_true',
-                        help='uninstall shell script if already installed without confirmation')
+    parser.add_argument('-y', '--yes', action='store_true', help='uninstall shell script if already installed without confirmation')
 
     args = parser.parse_args()
 
@@ -101,11 +100,9 @@ if __name__ == '__main__':
 
         for key, value in toalias:
             if os.path.isfile("./bin/{}".format(value)) and not os.path.isfile("./bin/{}".format(key)):
-                shutil.copy("./bin/{}".format(value),
-                            "./bin/{}".format(key))
+                shutil.copy("./bin/{}".format(value), "./bin/{}".format(key))
             else:
-                print("Error: ./bin/{} does not exist or ./bin/{} already exist.".format(
-                    value, key))
+                print("Error: ./bin/{} does not exist or ./bin/{} already exist.".format(value, key))
                 exit(1)
 
     for shell in os.listdir("./bin"):

@@ -1,14 +1,12 @@
 #!/usr/bin/python3
 
 # if you want to use sudo without password, run :
-#    sudo ln -sf /usr/local/bin/cui /usr/local/bin/sudo
+#    sudo ln -sf /usr/local/bin/ssudo /usr/local/bin/sudo
 # requires password first time and no need next time
 
 import getpass
-import os
 import random
 import sys
-from typing import Union
 
 from utils import *
 

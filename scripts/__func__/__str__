@@ -2,7 +2,7 @@
 
 from argparse import ArgumentParser
 
-from utils import linesep, to_string
+from utils import *
 
 
 if __name__ == "__main__":
@@ -14,9 +14,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    splitter = args.splitter
-    noend = args.noend
-    files = args.files
+    splitter: str = args.splitter
+    noend: bool = args.noend
+    files: List[str] = args.files
 
     if len(files) == 0:
         files.append("/dev/stdin")

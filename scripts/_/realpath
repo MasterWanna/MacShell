@@ -2,18 +2,17 @@
 
 from argparse import ArgumentParser
 
-from utils import get_realpath
+from utils import *
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Get realpath of files")
 
-    parser.add_argument("path", type=str,
-                        nargs="*", help="paths")
+    parser.add_argument("path", type=str, nargs="*", help="paths")
 
     args = parser.parse_args()
 
-    path = args.path
+    path: List[str] = args.path
 
     for p in path:
         print(get_realpath(p))

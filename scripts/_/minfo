@@ -1,0 +1,35 @@
+#!python3
+
+from argparse import ArgumentParser
+
+from utils import *
+
+try:
+    import audioread
+except ImportError:
+    print("This script requires the 'audioread' python libraries.")
+    print("Please install them and try again.")
+    exit(1)
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Show music info")
+
+    parser.add_argument("paths", type=str, default=[], nargs="*", help="music file path")
+
+    args = parser.parse_args()
+
+    paths: List[str] = args.paths
+
+    max_length = max([get_real_string_len(get_file_fullname(path)) for path in paths])
+
+    for path in paths:
+        if not os.path.exists(path):
+            print("{} does not exist.".format(path))
+            continue
+        
+        try:
+            with audioread.audio_open(path) as f:
+                fname = get_file_fullname(path)
+                print("{} : {} Channels {} Hz {:.2f} s".format(fname.ljust(max_length - get_real_string_len(fname) + len(fname)),f.channels, f.samplerate, f.duration))
+        except (audioread.DecodeError, audioread.NoBackendError):
+            print("Open {} failed.".format(get_filename(path)))

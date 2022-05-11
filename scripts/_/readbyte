@@ -7,7 +7,6 @@ import sys
 from utils import *
 
 
-
 def read_file(inputstream: IOBase) -> None:
     global byte
     try:
@@ -20,22 +19,21 @@ def read_file(inputstream: IOBase) -> None:
     except (EOFError, IndexError):
         pass
 
+
 if __name__ == "__main__":
     parser = ArgumentParser(description="Read byte code from file")
 
     parser.add_argument("-b", "--base", type=int, default=16)
     parser.add_argument("-i", "--ignore-linesep", action="store_true")
-    parser.add_argument("files", type=str,
-                        nargs="*", help="file to read")
+    parser.add_argument("files", type=str, nargs="*", help="file to read")
 
     args = parser.parse_args()
 
-    base = args.base
-    no_linesep = args.ignore_linesep
-    files = args.files
+    base: int = args.base
+    no_linesep: bool = args.ignore_linesep
+    files: List[str] = args.files
 
     max_len = byte_max_len(base)
-
 
     if len(files) == 0:
         read_file(sys.stdin.buffer)
