@@ -53,6 +53,24 @@ linesep = os.linesep
 line_sep = bytes(linesep, encoding="UTF-8")[0]
 
 
+def run_command_s(cmd: str) -> int:
+    return run_command(cmd, False)
+
+
+def run_command(cmd: str, echo: bool = True) -> int:
+    if echo:
+        print(cmd)
+
+    return os.system(cmd)
+
+
+def read_command(cmd: str) -> Tuple[int, str]:
+    pipe = os.popen(cmd)
+    res = pipe.read()
+
+    return (pipe.close(), res)
+
+
 def get_filename(path: str) -> str:
     return Path(path).stem
 
@@ -62,10 +80,25 @@ def get_file_fullname(path: str) -> str:
 
 
 def get_terminal_width() -> int:
-    try:
-        return os.get_terminal_size().columns
-    except OSError:
-        return 0
+    rows, cols = read_command('stty size')[1].split()
+    rows, cols = int(rows), int(cols)
+    return cols
+
+
+def align_columns(strs: Iterable[str], width: int = get_terminal_width()) -> str:
+    items = list(strs)
+    max_len = max(len(s) for s in items)
+    items_line = (width + 1) // (max_len + 1)
+
+    formatted = ""
+
+    for i in range(len(items)):
+        if (i + 1) % items_line == 0:
+            formatted += items[i] + linesep
+        else:
+            formatted += items[i].ljust(max_len + 1)
+
+    return formatted
 
 
 def get_realpath(path: str) -> str:
@@ -86,24 +119,6 @@ def string_expand(string: str, length: int) -> str:
     remainder = length % str_len
 
     return string * quotient + string[:remainder]
-
-
-def run_command_s(cmd: str) -> int:
-    return run_command(cmd, False)
-
-
-def run_command(cmd: str, echo: bool = True) -> int:
-    if echo:
-        print(cmd)
-
-    return os.system(cmd)
-
-
-def read_command(cmd: str) -> Tuple[int, str]:
-    pipe = os.popen(cmd)
-    res = pipe.read()
-
-    return (pipe.close(), res)
 
 
 def get_split_line(splitter: str = '-', text: str = None, length: int = get_terminal_width()) -> str:

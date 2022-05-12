@@ -1,0 +1,22 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get cmd")
+
+    parser.add_argument("command", type=str, nargs='?', help="command with full name or partial name or regex name")
+
+    args = parser.parse_args()
+
+    command: str = args.command
+
+    cmds = sorted(read_command("compgen -c")[1].strip().split(linesep))
+
+    if command:
+        cmds = [c for c in cmds if re.search(command, c)]
+
+    print(align_columns(cmds))
