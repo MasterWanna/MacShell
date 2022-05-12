@@ -47,6 +47,8 @@ def format_int_base(num: int, base: int) -> str:
 
 
 HOME = os.getenv("HOME")
+db_path = "{}/.config/shell-db.db".format(HOME)
+
 linesep = os.linesep
 line_sep = bytes(linesep, encoding="UTF-8")[0]
 
@@ -166,8 +168,7 @@ passwd_path = "{}/.config/passwd".format(HOME)
 # git
 
 
-git_repo_db_path = "{}/.config/git-repo.db".format(HOME)
-git_repo_table_name = "local-repo"
+git_repo_table_name = "git-repo"
 
 
 # git database

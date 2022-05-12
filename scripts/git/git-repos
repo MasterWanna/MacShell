@@ -19,7 +19,7 @@ if __name__ == "__main__":
     git_repo_paths = []
     git_repo_remove = []
 
-    conn = sqlite3.connect(git_repo_db_path)
+    conn = sqlite3.connect(db_path)
     conn.execute("create table if not exists '{}' (path text unique)".format(
         git_repo_table_name))
     conn.commit()
