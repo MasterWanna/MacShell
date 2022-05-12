@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-# Recommend run as : source $(bin proxy-off)
+# Recommend run as : eval $(proxy-off)
 #               or : add to your ~/.zshrc as function
 
-unset http_proxy
-unset https_proxy
+echo 'unset http_proxy'
+echo 'unset https_proxy'

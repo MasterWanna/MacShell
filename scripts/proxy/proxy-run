@@ -2,10 +2,10 @@
 
 if [[ $# > 0 ]]
 then
-    source $(bin proxy-on)
+    eval $(proxy-on)
     ip pub
     $@
-    source $(bin proxy-off)
+    eval $(proxy-off)
 else
     echo "Usage: proxy-run <command>"
 fi
