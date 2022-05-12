@@ -1,8 +1,11 @@
+import fcntl
 import math
 import os
 from pathlib import Path
 import re
 from sqlite3 import Connection
+import struct
+import termios
 from typing import Iterable, List, Tuple, Union
 
 # computation utils
@@ -79,13 +82,29 @@ def get_file_fullname(path: str) -> str:
     return path.split(os.sep)[-1]
 
 
-def get_terminal_width() -> int:
-    try:
-        rows, cols = os.get_terminal_size()
-    except OSError:
-        rows, cols = read_command('stty size')[1].split()
-        rows, cols = int(rows), int(cols)
-    return cols
+def get_terminal_size():
+    def ioctl_GWINSZ(fd):
+        try:
+            cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
+        except:
+            return
+        return cr
+
+    cr = ioctl_GWINSZ(0) or ioctl_GWINSZ(1) or ioctl_GWINSZ(2)
+
+    if not cr:
+        try:
+            fd = os.open(os.ctermid(), os.O_RDONLY)
+            cr = ioctl_GWINSZ(fd)
+            os.close(fd)
+        except:
+            pass
+
+    if not cr:
+        env = os.environ
+        cr = (env.get('LINES', 25), env.get('COLUMNS', 80))
+
+    return int(cr[0]), int(cr[1])
 
 
 def align_columns(strs: Iterable[str], width: int = -1) -> str:
@@ -93,7 +112,7 @@ def align_columns(strs: Iterable[str], width: int = -1) -> str:
     max_len = max(len(s) for s in items)
 
     if width <= 0:
-        width = get_terminal_width()
+        width = get_terminal_size()[1]
 
     items_line = (width + 1) // (max_len + 1)
 
@@ -132,6 +151,9 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = -1) -> s
     if len(splitter) == 0:
         raise ValueError("Splitter can't be empty.")
 
+    if length <= 0:
+        length = get_terminal_size()[1]
+
     if text is None:
         quotient = int(length / len(splitter))
         remainder = length % len(splitter)
@@ -153,9 +175,6 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = -1) -> s
         str_length = len(string)
         if str_length + 4 > length:
             raise ValueError("Text too long : " + string)
-
-        if length <= 0:
-            length = get_terminal_width()
 
         remaining = length - str_length - 2
         splitter_length = len(splitter)

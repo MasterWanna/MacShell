@@ -35,6 +35,8 @@ if __name__ == "__main__":
 
     max_len = byte_max_len(base)
 
+    byte = line_sep
+
     if len(files) == 0:
         read_file(sys.stdin.buffer)
     else:
