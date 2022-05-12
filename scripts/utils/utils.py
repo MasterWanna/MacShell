@@ -8,8 +8,8 @@ from typing import Iterable, List, Tuple, Union
 # computation utils
 
 
-char_A = b'A'[0]
-char_0 = b'0'[0]
+char_A = ord('A')
+char_0 = ord('0')
 
 
 def get_real_string_len(string: str) -> int:
@@ -50,7 +50,7 @@ HOME = os.getenv("HOME")
 db_path = "{}/.config/shell-db.db".format(HOME)
 
 linesep = os.linesep
-line_sep = bytes(linesep, encoding="UTF-8")[0]
+line_sep = ord(linesep)
 
 
 def run_command_s(cmd: str) -> int:
@@ -80,14 +80,21 @@ def get_file_fullname(path: str) -> str:
 
 
 def get_terminal_width() -> int:
-    rows, cols = read_command('stty size')[1].split()
-    rows, cols = int(rows), int(cols)
+    try:
+        rows, cols = os.get_terminal_size()
+    except OSError:
+        rows, cols = read_command('stty size')[1].split()
+        rows, cols = int(rows), int(cols)
     return cols
 
 
-def align_columns(strs: Iterable[str], width: int = get_terminal_width()) -> str:
+def align_columns(strs: Iterable[str], width: int = -1) -> str:
     items = list(strs)
     max_len = max(len(s) for s in items)
+
+    if width <= 0:
+        width = get_terminal_width()
+
     items_line = (width + 1) // (max_len + 1)
 
     formatted = ""
@@ -121,7 +128,7 @@ def string_expand(string: str, length: int) -> str:
     return string * quotient + string[:remainder]
 
 
-def get_split_line(splitter: str = '-', text: str = None, length: int = get_terminal_width()) -> str:
+def get_split_line(splitter: str = '-', text: str = None, length: int = -1) -> str:
     if len(splitter) == 0:
         raise ValueError("Splitter can't be empty.")
 
@@ -146,6 +153,9 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = get_term
         str_length = len(string)
         if str_length + 4 > length:
             raise ValueError("Text too long : " + string)
+
+        if length <= 0:
+            length = get_terminal_width()
 
         remaining = length - str_length - 2
         splitter_length = len(splitter)
