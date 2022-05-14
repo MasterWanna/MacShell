@@ -6,12 +6,9 @@ then
     exit 1
 fi
 
-command -v cl-$1 > /dev/null
-
-if [[ $? == 0 ]]
-then
-    cl-$@
-else
+command -v cl-$1 > /dev/null || {
     echo "cl-$1: command not found"
     exit 1
-fi
+}
+
+cl-$@

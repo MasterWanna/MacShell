@@ -1,11 +1,9 @@
 #!/bin/zsh
 
-git_root_path=$(git rev-parse --show-toplevel)
-if [[ $? > 0 ]]
-then
+git rev-parse --show-toplevel > /dev/null || {
     exit 1
-fi
-cd $git_root_path
+}
+cd $(git rev-parse --show-toplevel)
 
 git add . 
 if [[ $# == 0 ]] 

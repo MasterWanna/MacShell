@@ -6,12 +6,9 @@ then
     exit 1
 fi
 
-command -v k-$1 > /dev/null
-
-if [[ $? == 0 ]]
-then
-    k-$@
-else
+command -v k-$1 &> /dev/null || {
     echo "k-$1: command not found"
     exit 1
-fi
+}
+
+k-$@

@@ -2,14 +2,11 @@
 
 if [[ $# > 0 ]]
 then
-    command -v ip-$1 > /dev/null
-    if [[ $? == 0 ]]
-    then
-        ip-$@
-    else
-        echo "ip-$1 not found"
+    command -v ip-$1 &> /dev/null || {
+        echo "ip-$1: command not found"
         exit 1
-    fi
+    }
+    ip-$@
 else
     ip lo
 fi

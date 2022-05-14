@@ -6,12 +6,9 @@ then
     exit 1
 fi
 
-command -v s-$1 > /dev/null
-
-if [[ $? == 0 ]]
-then
-    s-$@
-else
+command -v s-$1 > /dev/null || {
     echo "s-$1: command not found"
     exit 1
-fi
+}
+
+s-$@
