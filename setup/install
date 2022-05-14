@@ -111,7 +111,7 @@ if __name__ == '__main__':
             exit(1)
 
     with open("./setup/.install", "w") as install:
-        for shell in os.listdir("./bin"):
+        for shell in sorted(os.listdir("./bin")):
             install.write("{}{}".format(shell, os.linesep))
 
             changeexec("./bin/{}".format(shell))
@@ -120,3 +120,4 @@ if __name__ == '__main__':
 
     shutil.rmtree("./bin")
     print("Install into /usr/local/bin successfully.")
+    print("Installed items : {}".format(file))

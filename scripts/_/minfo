@@ -8,7 +8,7 @@ try:
     import audioread
 except ImportError:
     print("This script requires the 'audioread' python libraries.")
-    print("Please install them and try again.")
+    print("Please install and try again.")
     exit(1)
 
 if __name__ == "__main__":
