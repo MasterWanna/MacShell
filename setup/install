@@ -38,12 +38,12 @@ if __name__ == '__main__':
 
     os.chdir(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-    file = "./setup/.install"
+    installed_files = "./setup/.install"
 
-    if os.path.isdir(file):
-        print("Error : {} is a directory.".format(file))
+    if os.path.isdir(installed_files):
+        print("Error : {} is a directory.".format(installed_files))
         exit(1)
-    elif os.path.isfile(file):
+    elif os.path.isfile(installed_files):
         if not args.yes:
             print("Script is already installed. Uninstall them first.")
             print("Do you want to continue? Y/[N]: ", end="", flush=True)
@@ -120,4 +120,4 @@ if __name__ == '__main__':
 
     shutil.rmtree("./bin")
     print("Install into /usr/local/bin successfully.")
-    print("Installed items : {}".format(file))
+    print("Installed items : {}".format(installed_files))

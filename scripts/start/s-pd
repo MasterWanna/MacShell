@@ -1,3 +1,66 @@
-#!/bin/zsh
+#!/usr/bin/python3
 
-open -a "PD Runner.app"
+from argparse import ArgumentParser
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Start Parallels Desktop Virtual Machine")
+
+    parser.add_argument("-n", "--name", type=str, default=None, help="full name or part of name or regex of name")
+
+    args = parser.parse_args()
+
+    if os.getuid() != 0:
+        print('This script must be run as root.')
+        exit(1)
+
+    name: str = args.name
+
+    code, res = read_command("sudo --user={} /usr/local/bin/prlctl list --all".format(os.environ["SUDO_USER"]))
+
+    if code:
+        print("Parallels Desktop run failed!")
+        exit(1)
+
+    res = res.split(linesep)[:-1]
+    title = res[0]
+    names = res[1:]
+
+    index = title.index("NAME")
+
+    names = [vm[index:] for vm in names]
+    
+    if name:
+        names = [vm for vm in names if re.search(name, vm, re.IGNORECASE)]
+
+    if len(names) == 0:
+        raise FileNotFoundError("No virtual machine found!")
+
+    if len(names) == 1:
+        vm = names[0]
+    else:
+        length = len(format_int_base(len(names) - 1, 10))
+        print("Select avd:")
+        for i, vm in enumerate(names):
+            print("{}. {}".format(str(i).rjust(length), vm))
+        
+        print("Enter number: ", end="", flush=True)
+        try:
+            vm = names[int(input())]
+        except (IndexError, ValueError):
+            print("Invalid number!")
+            exit(1)
+        except KeyboardInterrupt:
+            print("\nAborted!")
+            exit(1)
+
+    print(get_split_line(text=vm))
+
+    run_command_s([
+        "date -n 0101000000.00 &> /dev/null", 
+        "open -a \'Parallels Desktop\'", 
+        "sudo --user={} /usr/local/bin/prlctl start \'{}\'".format(os.environ["SUDO_USER"], vm),
+        "sntp -sS time.apple.com &> /dev/null"
+        ])
