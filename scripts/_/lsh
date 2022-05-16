@@ -1,3 +1,0 @@
-#!/bin/zsh
-
-login -f $USER zsh -c "cd $PWD && zsh"
