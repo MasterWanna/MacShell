@@ -1,7 +1,0 @@
-#!/bin/zsh
-
-sudo pkill -f "Parallels Desktop" || {
-    echo "Parallels Desktop not running"
-    exit 1
-}
-echo "Parallels Desktop is killed"
