@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-sudo pkill -f "Parallels Desktop" "PD.Runner" || {
+sudo pkill -f "Parallels Desktop" || {
     echo "Parallels Desktop not running"
     exit 1
 }

@@ -153,12 +153,15 @@ def string_expand(string: str, length: int) -> str:
     return string * quotient + string[:remainder]
 
 
-def get_split_line(splitter: str = '-', text: str = None, length: int = -1) -> str:
+def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> str:
     if len(splitter) == 0:
         raise ValueError("Splitter can't be empty.")
 
     if length <= 0:
-        length = get_terminal_size()[1]
+        length = get_terminal_size()[1] + length
+
+    if length <= 0:
+        raise ValueError("Length value out of range.")
 
     if text is None:
         quotient = int(length / len(splitter))
@@ -199,6 +202,26 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = -1) -> s
         remainder_r = (right - rr) % splitter_length
 
         return splitter * quotient_l + splitter[:remainder_l] + " " + string + " " + splitter[remainder_l:] + splitter * quotient_r + splitter[:remainder_r]
+
+
+def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: int = 0) -> str:
+    if len(splitter) == 0:
+        raise ValueError("Splitter can't be empty.")
+
+    if length <= 0:
+        length = get_terminal_size()[1] + length
+
+    if isinstance(text, str):
+        text = [text]
+
+    block = get_split_line(splitter, length=length) + "\n"
+
+    for line in text:
+        block += splitter + get_split_line(" ", line, length - len(splitter) * 2) + splitter + "\n"
+
+    block += get_split_line(splitter, length=length)
+
+    return block
 
 
 # db utils
