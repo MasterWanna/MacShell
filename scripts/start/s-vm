@@ -65,4 +65,4 @@ if __name__ == "__main__":
         ])
 
     print(get_split_block(text="Started!"))
-    print("If you have not started Parallels Desktop, start using 's-vm'")
+    print("If you have not started Parallels Desktop, start using 's-pd'")
