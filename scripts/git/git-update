@@ -7,7 +7,7 @@ import time
 from utils import *
 
 
-def show_git_repo(path: str) -> None:
+def update_git_repo(path: str) -> None:
     print(split_line)
     print("Git repo : {} from ".format(path), end="", flush=True)
     run_command_s("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
@@ -52,4 +52,4 @@ if __name__ == "__main__":
     split_line = get_split_line()
 
     for path in git_repo_paths:
-        show_git_repo(path)
+        update_git_repo(path)
