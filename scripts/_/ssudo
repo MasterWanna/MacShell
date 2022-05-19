@@ -77,7 +77,7 @@ def decode_passwd() -> Union[str, None]:
 
 
 def check_passwd(pwd: str) -> bool:
-    return os.system("printf {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
+    return run_command_s("printf {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
 
 
 if __name__ == "__main__":
