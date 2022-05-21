@@ -35,7 +35,7 @@ if __name__ == "__main__":
         names = [vm for vm in names if re.search(name, vm, re.IGNORECASE)]
 
     if len(names) == 0:
-        raise FileNotFoundError("No virtual machine found!")
+        raise ValueError("No virtual machine found!")
 
     if len(names) == 1:
         vm = names[0]

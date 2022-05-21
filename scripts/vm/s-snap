@@ -37,7 +37,7 @@ if __name__ == "__main__":
         names = [vm for vm in names if re.search(name, vm, re.IGNORECASE)]
 
     if len(names) == 0:
-        raise FileNotFoundError("No virtual machine found!")
+        raise ValueError("No virtual machine found!")
 
     if len(names) == 1:
         vm = names[0]
@@ -79,7 +79,7 @@ if __name__ == "__main__":
         keypair = {key: keypair[key] for key in keypair if re.search(snapshot, key, re.IGNORECASE)}
 
     if len(keypair) == 0:
-        raise FileNotFoundError("No virtual machine found!")
+        raise ValueError("No virtual machine found!")
 
     if len(keypair) == 1:
         snapname = list(keypair.keys())[0]

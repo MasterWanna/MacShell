@@ -21,7 +21,7 @@ if __name__ == "__main__":
         phones = [phone for phone in phones if re.search(name, phone, re.IGNORECASE)]
 
     if len(phones) == 0:
-        raise FileNotFoundError("No avd found!")
+        raise ValueError("No avd found!")
 
     if len(phones) == 1:
         phone = phones[0]
