@@ -154,8 +154,8 @@ def string_expand(string: str, length: int) -> str:
 
 
 def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> str:
-    if len(splitter) == 0:
-        raise ValueError("Splitter can't be empty.")
+    if len(splitter) != 1:
+        raise ValueError("Splitter should a single char.")
 
     if length <= 0:
         length = get_terminal_size()[1] + length
@@ -164,10 +164,7 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
         raise ValueError("Length value out of range.")
 
     if text is None:
-        quotient = int(length / len(splitter))
-        remainder = length % len(splitter)
-
-        return splitter * quotient + splitter[:remainder]
+        return splitter * length
     else:
         textarr = re.split(r'\s+', text)
 
@@ -186,38 +183,32 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
             raise ValueError("Text too long : " + string)
 
         remaining = length - str_length - 2
-        splitter_length = len(splitter)
         left = int(remaining / 2)
-        if remaining < splitter_length:
-            return splitter[:left] + " " + string + " " + splitter[left:remaining]
-
         right = remaining - left
 
-        quotient_l = int(left / len(splitter))
-        remainder_l = left % len(splitter)
-
-        rr = len(splitter) - remainder_l
-
-        quotient_r = int((right - rr) / splitter_length)
-        remainder_r = (right - rr) % splitter_length
-
-        return splitter * quotient_l + splitter[:remainder_l] + " " + string + " " + splitter[remainder_l:] + splitter * quotient_r + splitter[:remainder_r]
+        return splitter * left + " " + string + " " + splitter * right
 
 
-def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: int = 0) -> str:
-    if len(splitter) == 0:
-        raise ValueError("Splitter can't be empty.")
+def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: int = 0, width: Union[int, float] = 1) -> str:
+    if len(splitter) != 1:
+        raise ValueError("Splitter should a single char.")
 
     if length <= 0:
         length = get_terminal_size()[1] + length
 
+    if length <= 0:
+        raise ValueError("Length value out of range.")
+
     if isinstance(text, str):
         text = [text]
+    
+    if isinstance(width, float):
+        width = int(width * length)
 
     block = get_split_line(splitter, length=length) + "\n"
 
     for line in text:
-        block += splitter + get_split_line(" ", line, length - len(splitter) * 2) + splitter + "\n"
+        block += splitter * width + get_split_line(" ", line, length - width * 2) + splitter * width + "\n"
 
     block += get_split_line(splitter, length=length)
 

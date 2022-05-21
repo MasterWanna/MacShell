@@ -9,7 +9,7 @@ from utils import *
 if __name__ == "__main__":
     parser = ArgumentParser(description="Start Android Pixel")
 
-    parser.add_argument("-n", "--name", type=str, default=None, help="full name or part of name or regex of name")
+    parser.add_argument("-n", "--name", type=str, default=None, help="name of phone")
 
     args = parser.parse_args()
 

@@ -1,0 +1,115 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+import json
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Start Parallels Desktop Snapshot")
+
+    parser.add_argument("-n", "--name", type=str, default=None, help="name of virtual machine")
+    parser.add_argument("-s", "--snapshot", type=str, default=None, help="name of snapshot")
+
+    args = parser.parse_args()
+
+    if os.getuid() == 0:
+        print('This script must be run as the owner of user.')
+
+    name: str = args.name
+
+    code, res = read_command("/usr/local/bin/prlctl list --all")
+
+    if code:
+        print("Parallels Desktop run failed!")
+        exit(1)
+
+    res = res.split(linesep)[:-1]
+    title = res[0]
+    names = res[1:]
+
+    index = title.index("NAME")
+
+    names = [vm[index:] for vm in names]
+    
+    if name:
+        names = [vm for vm in names if re.search(name, vm, re.IGNORECASE)]
+
+    if len(names) == 0:
+        raise FileNotFoundError("No virtual machine found!")
+
+    if len(names) == 1:
+        vm = names[0]
+    else:
+        length = len(format_int_base(len(names) - 1, 10))
+        print("Select virtual machine:")
+        for i, vm in enumerate(names):
+            print("{}. {}".format(str(i).rjust(length), vm))
+        
+        print("Enter number: ", end="", flush=True)
+        try:
+            vm = names[int(input())]
+        except (IndexError, ValueError):
+            print("Invalid number!")
+            exit(1)
+        except KeyboardInterrupt:
+            print("\nAborted!")
+            exit(1)
+
+    print("Selected virtual machine: {}".format(vm))
+
+    snapshot: str = args.snapshot
+
+    code, res = read_command("/usr/local/bin/prlctl snapshot-list \"{}\" -j".format(vm))
+
+    if code:
+        print("Parallels Desktop run failed!")
+        exit(1)
+
+    if not res:
+        print("No snapshot found!")
+        exit(1)
+
+    snapshots = json.loads(res)
+
+    keypair = {snapshots[key]["name"]: key for key in snapshots}
+
+    if name and snapshot:
+        keypair = {key: keypair[key] for key in keypair if re.search(snapshot, key, re.IGNORECASE)}
+
+    if len(keypair) == 0:
+        raise FileNotFoundError("No virtual machine found!")
+
+    if len(keypair) == 1:
+        snapname = list(keypair.keys())[0]
+        snapid = keypair[snapname]
+    else:
+        print(get_split_line(text=vm))
+        length = len(format_int_base(len(keypair) - 1, 10))
+        print("Select snapshot:")
+        for i, snap in enumerate(keypair):
+            print("{}. {}".format(str(i).rjust(length), snap))
+        
+        print("Enter number: ", end="", flush=True)
+        try:
+            snapname = list(keypair.keys())[int(input())]
+            snapid = keypair[snapname]
+        except (IndexError, ValueError):
+            print("Invalid number!")
+            exit(1)
+        except KeyboardInterrupt:
+            print("\nAborted!")
+            exit(1)
+
+    print(get_split_block(text="Snapshot <{}> of <{}>".format(snapname, vm)))
+
+    run_command_s([
+        "sudo true",
+        "sudo date -n 0101000000.00 &> /dev/null",
+        "/usr/local/bin/prlctl snapshot-switch '{}' -i '{}'".format(vm, snapid),
+        "sudo sntp -sS time.apple.com &> /dev/null"
+        ])
+
+    print(get_split_block(text="Recovered Snapshot!"))
+    print("If you have not started Parallels Desktop, start using 's-pd'")

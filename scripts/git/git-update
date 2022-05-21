@@ -23,7 +23,7 @@ def update_git_repo(path: str) -> None:
 if __name__ == "__main__":
     parser = ArgumentParser(description="Update git repos")
 
-    parser.add_argument("repos", type=str, default=[], nargs="*", help="repo paths with full path or partial path or regex path")
+    parser.add_argument("repos", type=str, default=[], nargs="*", help="repo paths")
 
     args = parser.parse_args()
 
