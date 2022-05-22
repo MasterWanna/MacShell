@@ -19,6 +19,8 @@ if __name__ == "__main__":
 
     name: str = args.name
 
+    name = get_value_ignore_case(VM_NAME_MAPPING, name, name)
+
     code, res = read_command("/usr/local/bin/prlctl list --all")
 
     if code:
@@ -104,12 +106,14 @@ if __name__ == "__main__":
 
     print(get_split_block(text="Snapshot <{}> of <{}>".format(snapname, vm)))
 
-    run_command_s([
-        "sudo true",
-        "sudo date -n 0101000000.00 &> /dev/null",
-        "/usr/local/bin/prlctl snapshot-switch '{}' -i '{}'".format(vm, snapid),
-        "sudo sntp -sS time.apple.com &> /dev/null"
-        ])
+    if run_command_s([
+            "sudo true || exit 1",
+            "sudo date -n 0101000000.00 &> /dev/null",
+            "/usr/local/bin/prlctl snapshot-switch '{}' -i '{}'".format(vm, snapid),
+            "sudo sntp -sS time.apple.com &> /dev/null"
+        ]):
+        print(get_split_block(text="Snapshot recovery failed!"))
+        exit(1)
 
     print(get_split_block(text="Recovered Snapshot!"))
     print("If you have not started Parallels Desktop, start using 's-pd'")

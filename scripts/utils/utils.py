@@ -6,13 +6,20 @@ import re
 from sqlite3 import Connection
 import struct
 import termios
-from typing import Iterable, List, Tuple, Union
+from typing import Any, Dict, Iterable, List, Tuple, Union
 
 # computation utils
 
 
 char_A = ord('A')
 char_0 = ord('0')
+
+
+def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) -> Union[str, Any]:
+    for k, v in dic.items():
+        if k.lower() == key.lower():
+            return v
+    return default
 
 
 def get_real_string_len(string: str) -> int:
@@ -51,6 +58,9 @@ def format_int_base(num: int, base: int) -> str:
 
 HOME = os.getenv("HOME")
 db_path = "{}/.config/shell-db.db".format(HOME)
+VM_NAME_MAPPING = {
+    "redhat": "Red Hat"
+}
 
 linesep = os.linesep
 line_sep = ord(linesep)
