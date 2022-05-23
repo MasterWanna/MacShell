@@ -43,6 +43,6 @@ if __name__ == "__main__":
 
     print(get_split_block(text=phone))
     run_command_s([
-        'export DYLD_LIBRARY_PATH="$HOME/Library/Android/sdk/emulator/lib64/qt/lib/:$HOME/Library/Android/sdk/emulator/lib64/:$DYLD_LIBRARY_PATH"',
-        '{}/Library/Android/sdk/emulator/qemu/darwin-aarch64/qemu-system-aarch64 -netdelay none -netspeed full -avd {}'.format(HOME, phone)
+            'export DYLD_LIBRARY_PATH="$HOME/Library/Android/sdk/emulator/lib64/qt/lib/:$HOME/Library/Android/sdk/emulator/lib64/:$DYLD_LIBRARY_PATH"',
+            '{}/Library/Android/sdk/emulator/qemu/darwin-aarch64/qemu-system-aarch64 -netdelay none -netspeed full -avd {}'.format(HOME, phone)
         ])

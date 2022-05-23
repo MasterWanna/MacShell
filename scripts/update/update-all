@@ -1,0 +1,20 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Update Everything")
+
+    args = parser.parse_args()
+
+    cmds = read_command("cmd -n ^update- | sort")[1]
+
+    for cmd in cmds.split():
+        if get_file_fullname(cmd) == get_file_fullname(__file__):
+            continue
+
+        run_command_s([cmd])
+

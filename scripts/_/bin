@@ -9,8 +9,7 @@ from utils import *
 if __name__ == "__main__":
     parser = ArgumentParser(description="Get realpath of files")
 
-    parser.add_argument("path", type=str,
-                        nargs="*", help="paths")
+    parser.add_argument("path", type=str, nargs="*", help="paths")
 
     args = parser.parse_args()
 

@@ -7,6 +7,7 @@ from utils import *
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Exec command with split line")
+
     parser.add_argument("-t", "--text", type=str, default=None, help="text for exec command")
     parser.add_argument("cmd", type=str, nargs='+', help="command")
 
@@ -21,7 +22,8 @@ if __name__ == "__main__":
 
     text = text if text else command
     
-    print(get_split_line(text=text))
+    print(get_split_block(text=text))
     
     run_command_s(command)
-    
+
+    print(get_split_block(text="Done!"))

@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+__exec__ "brew update" || exit
+__exec__ "brew upgrade"
+__exec__ 'brew upgrade $(brew list --cask) --cask'
+__exec__ -t "clean brew cache" "cl brew"

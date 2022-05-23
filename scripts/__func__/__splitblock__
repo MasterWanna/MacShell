@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get split block")
+
+    parser.add_argument("-s", "--splitter", type=str, default='-', help="pattern for split block")
+    parser.add_argument("-t", "--text", type=str, default=None, help="text in split block")
+
+    args = parser.parse_args()
+
+    splitter: str = args.splitter
+    text: str = args.text
+
+    print(get_split_block(text, splitter))

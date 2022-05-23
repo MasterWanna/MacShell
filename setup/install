@@ -28,6 +28,7 @@ def changeexec(path: str):
 
 if __name__ == '__main__':
     parser = ArgumentParser(description="Install shell script")
+    
     parser.add_argument('-y', '--yes', action='store_true', help='uninstall shell script if already installed without confirmation')
 
     args = parser.parse_args()

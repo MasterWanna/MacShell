@@ -6,7 +6,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Get realpath of files")
+    parser = ArgumentParser(description="Get split line")
 
     parser.add_argument("-s", "--splitter", type=str, default='-', help="pattern for split line")
     parser.add_argument("-n", "--noend", action='store_true', help="do not print \\n at the end of line")

@@ -2,7 +2,7 @@
 
 if [[ $# == 0 ]]
 then
-    echo "Usage : $(cmd | grep "^cl-" | __str__ -n)"
+    echo "Usage : $(cmd -n "^cl-" | __str__ -n)"
     exit 1
 fi
 
