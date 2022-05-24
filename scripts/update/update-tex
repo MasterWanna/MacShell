@@ -1,3 +1,4 @@
 #!/bin/zsh
 
-sudo /Library/TeX/texbin/tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet --machine-readable --persistent-downloads update --all
+sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --self
+sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet --machine-readable --persistent-downloads update --all
