@@ -6,24 +6,28 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Exec command with split line")
+    parser = ArgumentParser(description="Exec Command with Split Block or Split Line")
 
+    parser.add_argument("-l", "--line", action='store_true', help="use split line")
     parser.add_argument("-t", "--text", type=str, default=None, help="text for exec command")
     parser.add_argument("cmd", type=str, nargs='+', help="command")
 
     args = parser.parse_args()
     
+    line: bool = args.line 
     text: str = args.text
     cmd: List[str] = args.cmd
-
-    splitline = get_split_line()
 
     command = to_string(cmd, ' ')
 
     text = text if text else command
     
-    print(get_split_block(text=text))
+    if line:
+        print(get_split_line(text=text))
+    else:
+        print(get_split_block(text=text))
     
     run_command_s(command)
 
-    print(get_split_block(text="Done!"))
+    if not line:
+        print(get_split_block(text="Done!"))

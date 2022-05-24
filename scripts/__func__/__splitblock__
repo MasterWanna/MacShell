@@ -6,7 +6,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Get split block")
+    parser = ArgumentParser(description="Get Split Block")
 
     parser.add_argument("-s", "--splitter", type=str, default='-', help="pattern for split block")
     parser.add_argument("-t", "--text", type=str, default=None, help="text in split block")

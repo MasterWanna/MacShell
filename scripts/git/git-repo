@@ -7,7 +7,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Add or remove git repos")
+    parser = ArgumentParser(description="Add or Remove Git Repos")
 
     parser.add_argument("-r", "--remove", action="store_true")
     parser.add_argument("repos", type=str, nargs="+", help="repo paths")

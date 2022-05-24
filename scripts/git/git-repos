@@ -12,7 +12,7 @@ def show_git_repo(path: str) -> None:
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Show git repos")
+    parser = ArgumentParser(description="Show Git Repos")
 
     parser.parse_args()
 

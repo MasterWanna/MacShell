@@ -25,8 +25,8 @@ if __name__ == '__main__':
                 raise FileNotFoundError("update-{}: command not found!".format(n))
     else:
         if not cmd:
-            print("Usage : ", end='', flush=True)
-            run_command_s("cmd -n '^update-' | __str__")
+            code, res = read_command("cmd -n '^update-' | __str__ -n")
+            print("Usage : {}".format(res))
             exit(1)
 
         command = "update-" + to_string(cmd, ' ')

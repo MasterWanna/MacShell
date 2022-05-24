@@ -6,7 +6,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Get realpath of files")
+    parser = ArgumentParser(description="Get Realpath of Files")
 
     parser.add_argument("path", type=str, nargs="*", help="paths")
 

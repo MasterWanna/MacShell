@@ -11,7 +11,7 @@ except ImportError:
     exit(1)
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Get public IP address")
+    parser = ArgumentParser(description="Get Public IP Address")
 
     args = parser.parse_args()
 

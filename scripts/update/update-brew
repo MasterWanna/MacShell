@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+__splitblock__ -t "Update Brew Formula or Cask"
 __exec__ "brew update" || exit
 __exec__ "brew upgrade"
 __exec__ 'brew upgrade $(brew list --cask) --cask'

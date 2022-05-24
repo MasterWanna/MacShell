@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-__splitblock__ -t "conda update"
+__splitblock__ -t "Update Conda Repo"
 __exec__ -t "base" "conda update -n base --all -y"
 
 environ=$(conda env list | grep py3 | awk '{print $1}')

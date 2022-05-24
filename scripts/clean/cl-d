@@ -9,7 +9,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Clean directories")
+    parser = ArgumentParser(description="Clean Directories")
 
     parser.add_argument("path", type=str, nargs="*", help="paths")
 

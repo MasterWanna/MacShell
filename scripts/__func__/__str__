@@ -6,7 +6,7 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Join strings")
+    parser = ArgumentParser(description="Join Strings")
 
     parser.add_argument("-s", "--splitter", type=str, default=", ", help="splitter of strings")
     parser.add_argument("-n", "--noend", action='store_true', help="do not print \\n at the end of line")
