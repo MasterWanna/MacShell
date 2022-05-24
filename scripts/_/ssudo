@@ -32,7 +32,7 @@ def encode_passwd(passwd: str) -> None:
 
     pos = random.randint(0, len(passwd))
 
-    with open("{}/.config/passwd".format(os.getenv("HOME")), "w") as f:
+    with open(passwd_path, "w") as f:
         f.write("{:02x} ".format(pos))
 
         bytearr = bytes(passwd, "utf-8")
@@ -49,12 +49,11 @@ def encode_passwd(passwd: str) -> None:
 
 
 def decode_passwd() -> Union[str, None]:
-    passwd_file = "{}/.config/passwd".format(os.getenv("HOME"))
 
-    if not os.path.exists(passwd_file):
+    if not os.path.exists(passwd_path):
         return None
 
-    with open("{}/.config/passwd".format(os.getenv("HOME")), "r") as f:
+    with open(passwd_path, "r") as f:
         passwd_arr = f.readline().strip()
 
     if len(passwd_arr) == 0:
@@ -90,7 +89,7 @@ if __name__ == "__main__":
         while True:
             try:
                 passwd = getpass.getpass("Password: ")
-                print(check_passwd(passwd))
+                check_passwd(passwd)
             except EOFError:
                 print()
                 print("Empty password!")
