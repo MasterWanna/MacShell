@@ -1,20 +1,51 @@
-#!/bin/zsh
+#!/usr/bin/python3
 
-__splitblock__ -t "Update Conda Repo"
-__exec__ -t "base" "conda update -n base --all -y"
+from argparse import ArgumentParser
+import json
 
-environ=$(conda env list | grep py3 | awk '{print $1}')
-__exec__ -t "$environ" "conda update -n $environ --all -y"
+from utils import *
 
-environs=$(conda env list | grep ^dev-)
-for environ in $environs
-do
-    name=$(echo $environ | awk '{print $1}')
-    loc=$(echo $environ | awk '{print $2}')
-    __exec__ -t "conda pkgs for $name" "conda update -n $name --all -y"
-    if [ -f $loc/upgrade-args ]
-    then
-        __exec__ -t "pip pkgs for $name" "$loc/bin/python -m pip install $(cat $loc/upgrade-args)"
-    fi
-done
-__exec__ -t "conda clean" "conda clean -a -y"
+
+def update(name: str, path: str):
+    print(get_split_block(text="conda pkgs for {}".format(name)))
+    run_command_s("conda update -n {} --all -y".format(name))
+    print(get_split_block(text="Done!"))
+    if os.path.isfile("{}/upgrade-pip".format(path)):
+        print(get_split_block(text="pip pkgs for {}".format(name)))
+        run_command_s("{}/bin/python -m pip install $(cat {}/upgrade-pip)".format(path, path))
+        run_command_s("{}/bin/python -m pip cache remove '*'".format(path))
+        print(get_split_block(text="Done!"))
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Update Conda Repo")
+
+    args = parser.parse_args()
+
+    code, res = read_command("conda env list --json")
+
+    if code:
+        print("Conda run failed!")
+        exit(1)
+
+    envs = json.loads(res)["envs"]
+
+    envs = {get_filename(env) if "envs" in env else "base": env for env in envs}
+
+    update("base", envs["base"])
+
+    pybase = [env for env in envs if re.fullmatch("py[0-9XJQK]+", env)]
+
+    if len(pybase) > 0:
+        pybase = pybase[0]
+        update(pybase, envs[pybase])
+
+    devbase = [env for env in envs if re.fullmatch("dev-.+", env)]
+
+    if len(pybase) > 0:
+        for env in devbase:
+            update(env, envs[env])
+
+    print(get_split_block(text="conda clean"))
+    run_command_s("conda clean -a -y")
+    print(get_split_block(text="Done!"))
