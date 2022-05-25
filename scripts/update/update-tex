@@ -1,6 +1,4 @@
 #!/bin/zsh
 
 __splitblock__ -t "Update MacTex"
-tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --machine-readable --list --all
-sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --self
-sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --machine-readable --persistent-downloads --all
+sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --machine-readable --persistent-downloads --self --all
