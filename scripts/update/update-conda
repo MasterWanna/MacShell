@@ -37,7 +37,7 @@ if __name__ == "__main__":
     envs = {get_filename(env) if "envs" in env else "base": env for env in envs}
 
     if names:
-        updateenv = [env for name in names for env in envs if re.fullmatch(name, env)]
+        updateenv = [env for name in names for env in envs if re.fullmatch(name, env, re.IGNORECASE)]
 
     else:
         updateenv = ["base"]
