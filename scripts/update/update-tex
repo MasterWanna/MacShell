@@ -1,9 +1,4 @@
 #!/bin/zsh
 
-if [[ $UID != 0 ]]; then
-    echo "Please run this script with sudo:"
-    echo "sudo $0 $*"
-else
-    __splitblock__ -t "Update MacTex"
-    sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --machine-readable --persistent-downloads --self --all
-fi
+__splitblock__ -t "Update MacTex"
+sudo tlmgr --repository https://mirrors.tuna.tsinghua.edu.cn/CTAN/systems/texlive/tlnet update --machine-readable --persistent-downloads --self --all
