@@ -38,12 +38,7 @@ if __name__ == "__main__":
     conn.close()
 
     if repos:
-        git_repo_paths_clone = git_repo_paths
-        git_repo_paths = []
-        for repo in repos:
-            for path in git_repo_paths_clone:
-                if re.search(repo, path, re.IGNORECASE) and path not in git_repo_paths:
-                    git_repo_paths.append(path)
+        git_repo_paths = [path for repo in repos for path in git_repo_paths if re.search(repo, get_filename(path), re.IGNORECASE)]
 
     if not git_repo_paths:
         print("No git repo found.")

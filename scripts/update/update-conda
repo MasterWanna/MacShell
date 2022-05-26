@@ -20,7 +20,11 @@ def update(name: str, path: str):
 if __name__ == "__main__":
     parser = ArgumentParser(description="Update Conda Repo")
 
+    parser.add_argument("names", type=str, default=[], nargs="*", help="repo names")
+
     args = parser.parse_args()
+
+    names: List[str] = args.names
 
     code, res = read_command("conda env list --json")
 
@@ -32,19 +36,25 @@ if __name__ == "__main__":
 
     envs = {get_filename(env) if "envs" in env else "base": env for env in envs}
 
-    update("base", envs["base"])
+    if names:
+        updateenv = [env for name in names for env in envs if re.fullmatch(name, env)]
 
-    pybase = [env for env in envs if re.fullmatch("py[0-9XJQK]+", env)]
+    else:
+        updateenv = ["base"]
 
-    if len(pybase) > 0:
-        pybase = pybase[0]
-        update(pybase, envs[pybase])
+        pybase = [env for env in envs if re.fullmatch("py[0-9XJQK]+", env)]
 
-    devbase = [env for env in envs if re.fullmatch("dev-.+", env)]
+        if len(pybase) > 0:
+            pybase = pybase[0]
+            updateenv.append(pybase)
 
-    if len(pybase) > 0:
-        for env in devbase:
-            update(env, envs[env])
+        devbase = [env for env in envs if re.fullmatch("dev-.+", env)]
+
+        if len(pybase) > 0:
+            updateenv.extend(sorted(devbase))
+
+    for name in updateenv:
+        update(name, envs[name])
 
     print(get_split_block(text="conda clean"))
     run_command_s("conda clean -a -y")
