@@ -1,8 +1,17 @@
-#!/bin/zsh
+#!/usr/bin/python3
 
-command -v pcregrep &>/dev/null || {
-    echo "pcregrep is not installed"
-    exit 1
-}
+from argparse import ArgumentParser
 
-ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\t)*'
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get Local IP Address")
+
+    args = parser.parse_args()
+
+    ipres = read_command("ifconfig")[1]
+
+    matches = [res.group() for res in re.finditer("^[^\s:]+:([^\n]|\n\s)*(inet |inet6 [^\n]+prefixlen 128)([^\n]|\n\s)*", ipres, re.MULTILINE)]
+
+    print(to_string(matches, linesep))
