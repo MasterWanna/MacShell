@@ -13,6 +13,7 @@ def update(name: str, path: str):
     if os.path.isfile("{}/upgrade-pip".format(path)):
         print(get_split_block(text="pip pkgs for {}".format(name)))
         run_command_s("{}/bin/python -m pip install $(cat {}/upgrade-pip)".format(path, path))
+        print(get_split_block(text="clean pip cache for {}".format(name)))
         run_command_s("{}/bin/python -m pip cache remove '*'".format(path))
         print(get_split_block(text="Done!"))
 
