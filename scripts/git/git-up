@@ -10,7 +10,7 @@ if [[ $# == 0 ]]
 then
     git commit -m "$(now) $(git state | xargs)"
 else
-    git commit -m "$(now) $* : $(git state | xargs)"
+    git commit -m "$(now) $@ : $(git state | xargs)"
 fi
 git push
 

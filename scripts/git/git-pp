@@ -9,7 +9,7 @@ if [[ $# == 0 ]]
 then
     git commit -m "$(now) $(git cached | xargs)"
 else
-    git commit -m "$(now) $* : $(git cached | xargs)"
+    git commit -m "$(now) $@ : $(git cached | xargs)"
 fi
 git push
 
