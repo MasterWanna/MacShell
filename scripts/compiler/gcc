@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+exec=($(cmd -n "^gcc-[0-9]+" | sort -rV))
+
+if [[ ${#exec} > 0 ]]
+then
+    $exec[1] "$@"
+else
+    /usr/bin/gcc "$@"
+fi
