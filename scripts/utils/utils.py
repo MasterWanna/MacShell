@@ -225,6 +225,35 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
     return block
 
 
+def list_table(title: Union[List[str], int], args: List[List[Any]]) -> str:
+    if isinstance(title, int):
+        max_len = [0] * title
+    else:
+        max_len = [len(t) for t in title]
+
+    for arg in args:
+        for i, arg_item in enumerate(arg):
+            if isinstance(arg_item, str):
+                arg_item_len = len(arg_item)
+            else:
+                arg_item_len = len(str(arg_item))
+
+            if arg_item_len > max_len[i]:
+                max_len[i] = arg_item_len
+
+    table = get_split_line() + "\n"
+
+    if isinstance(title, list):
+        title_str = to_string([title[i].ljust(max_len[i]) for i in range(len(max_len))], "  ") + "\n"
+        table += title_str + get_split_line() + "\n"
+    
+    for arg in args:
+        arg_str = to_string([arg[i].ljust(max_len[i]) for i in range(len(max_len))], "  ") + "\n"
+        table += arg_str + get_split_line() + "\n"
+
+    return table
+
+
 # db utils
 
 

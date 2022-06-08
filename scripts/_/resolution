@@ -1,0 +1,20 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+import json
+
+from utils import *
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description="Get Screen Resolution")
+
+    args = parser.parse_args()
+
+    resolutions = read_command("system_profiler -json SPDisplaysDataType")[1]
+    resolutions = json.loads(resolutions)
+    resolutions = resolutions["SPDisplaysDataType"][0]["spdisplays_ndrvs"]
+    resolutions = [(resolution["_name"], resolution["_spdisplays_pixels"], *(resolution["_spdisplays_resolution"].split(" @ "))) for resolution in resolutions]
+
+    print(list_table(["Name", "Pixels", "Resolution", "Rate"], resolutions), end="")
+
