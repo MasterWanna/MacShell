@@ -106,6 +106,9 @@ if __name__ == '__main__':
                 print("Error: ./bin/{} does not exist or ./bin/{} already exist.".format(value, key))
                 exit(1)
 
+    if not os.path.exists("/usr/local/bin"):
+        os.makedirs("/usr/local/bin")
+
     for shell in os.listdir("./bin"):
         if os.path.exists("/usr/local/bin/{}".format(shell)):
             print("Error: /usr/local/bin/{} already exist.".format(shell))
