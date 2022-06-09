@@ -15,7 +15,13 @@ if __name__ == "__main__":
 
     name: str = args.name
 
-    phones = [get_filename(phone) for phone in sorted(glob.glob("{}/.android/avd/*.avd".format(HOME)))]
+    code, avds = read_command("{}/Library/Android/sdk/emulator/emulator -list-avds".format(HOME))
+
+    if code:
+        print("Error: Android SDK not found!")
+        exit(1)
+
+    phones = [get_filename(phone) for phone in sorted(avds.split())]
     
     if name:
         phones = [phone for phone in phones if re.search(name, phone, re.IGNORECASE)]
