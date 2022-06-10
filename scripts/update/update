@@ -1,34 +1,14 @@
-#!/usr/bin/python3
+#!/bin/zsh
 
-from argparse import ArgumentParser
-import shutil
+if [[ $# == 0 ]]
+then
+    echo "Usage : $(cmd -n "^update-" | __str__ -n)"
+    exit 1
+fi
 
-from utils import *
+command -v update-$1 > /dev/null || {
+    echo "update-$1: command not found"
+    exit 1
+}
 
-
-if __name__ == '__main__':
-    parser = ArgumentParser(description="Update Something")
-
-    parser.add_argument("-n", "--name", type=str, nargs="*", default=[], help="name of commands")
-    parser.add_argument("cmd", type=str, nargs="*", help="command, ignored if name specified")
-
-    args = parser.parse_args()
-
-    name: List[str] = args.name
-    cmd: List[str] = args.cmd
-
-    if name:
-        for n in name:
-            if shutil.which("update-{}".format(n)):
-                os.system("update-{}".format(n))
-            else:
-                raise FileNotFoundError("update-{}: command not found!".format(n))
-    else:
-        if not cmd:
-            code, res = read_command("cmd -n '^update-' | __str__ -n")
-            print("Usage : {}".format(res))
-            exit(1)
-
-        command = "update-" + to_string(cmd, ' ')
-
-        run_command_s(command)
+update-$@
