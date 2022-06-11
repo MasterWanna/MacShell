@@ -291,8 +291,7 @@ def realpath_repo(repos: List[str]) -> Union[List[str], None]:
 
     for path in repos:
         realpath = get_realpath(path)
-        returncode, res = read_command(
-            "git -C {} rev-parse --show-toplevel 2> /dev/null".format(realpath))
+        returncode, res = read_command("git -C {} rev-parse --show-toplevel 2> /dev/null".format(realpath))
         if returncode:
             print("Git repo : " + realpath + " not found.")
             return None
