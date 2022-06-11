@@ -8,40 +8,40 @@ import sys
 from utils import *
 
 
-def remove(path: str):
-    if os.path.isdir(path):
+def remove(pp: str):
+    if os.path.isdir(pp):
         try:
-            shutil.rmtree(path)
+            shutil.rmtree(pp)
         except FileNotFoundError as e:
             if not str(e.filename).startswith("._"):
                 raise e
         except PermissionError as e:
-            print("Requried permission to remove {}".format(path))
+            print("Requried permission to remove {}".format(pp))
             exit(1)
     else:
         try:
-            os.remove(path)
+            os.remove(pp)
         except PermissionError as e:
-            print("Requried permission to remove {}".format(path))
+            print("Requried permission to remove {}".format(pp))
             exit(1)
-
 
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Clean Directories")
 
-    parser.add_argument("path", type=str, nargs="*", help="paths")
+    parser.add_argument("paths", type=str, nargs="*", help="paths")
 
     args = parser.parse_args()
 
-    path: List[str] = args.path
+    paths: List[str] = args.paths
 
     cmd = sys.argv[0]
 
-    for p in path:
+    for p in paths:
         if shutil.which("{}-{}".format(cmd, p)):
             os.system("{}-{}".format(cmd, p))
         else:
+            print(p)
             if not os.path.exists(p):
                 raise FileNotFoundError("{} not found!".format(p))
             
