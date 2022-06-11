@@ -13,12 +13,14 @@ import tty
 
 def getchar() -> str:
     fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
+    old_mode = termios.tcgetattr(fd)
     try:
-        tty.setraw(sys.stdin.fileno())
+        mode = termios.tcgetattr(fd)
+        mode[tty.LFLAG] = mode[tty.LFLAG] & ~termios.ICANON
+        termios.tcsetattr(fd, termios.TCSANOW, mode)
         ch = sys.stdin.read(1)
     finally:
-        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        termios.tcsetattr(fd, termios.TCSANOW, old_mode)
     return ch
 
 
@@ -49,9 +51,9 @@ if __name__ == '__main__':
             print("Script is already installed. Uninstall them first.")
             print("Do you want to continue? Y/[N]: ", end="", flush=True)
             option = getchar()
-            print()
-            if option.upper() != "Y":
+            if option.lower() != os.linesep:
                 print()
+            if option.upper() != "Y":
                 print("Aborted.")
                 exit(1)
 
