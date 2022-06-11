@@ -174,7 +174,7 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
         raise ValueError("Length value out of range.")
 
     if text is None:
-        return splitter * length
+        return "\r" + splitter * length
     else:
         textarr = re.split(r'\s+', text)
 
@@ -196,7 +196,7 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
         left = int(remaining / 2)
         right = remaining - left
 
-        return splitter * left + " " + string + " " + splitter * right
+        return "\r" + splitter * left + " " + string + " " + splitter * right
 
 
 def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: int = 0, width: Union[int, float] = 1) -> str:
@@ -222,7 +222,7 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
 
     block += get_split_line(splitter, length=length)
 
-    return block
+    return "\r" + block
 
 
 def list_table(title: Union[List[str], int], args: List[List[Any]]) -> str:
