@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     snapshot: str = args.snapshot
 
-    code, res = read_command("/usr/local/bin/prlctl snapshot-list \"{}\" -j".format(vm))
+    code, res = read_command("/usr/local/bin/prlctl snapshot-list \"{}\" --json".format(vm))
 
     if code:
         print("Parallels Desktop run failed!")

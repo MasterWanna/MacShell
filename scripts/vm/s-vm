@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from argparse import ArgumentParser
+import json
 
 from utils import *
 
@@ -17,23 +18,18 @@ if __name__ == "__main__":
 
     name: str = args.name
 
-    name = get_value_ignore_case(VM_NAME_MAPPING, name, name)
-
-    code, res = read_command("/usr/local/bin/prlctl list --all")
+    code, res = read_command("/usr/local/bin/prlctl list --all --json")
 
     if code:
         print("Parallels Desktop run failed!")
         exit(1)
+        
+    res = json.loads(res)
 
-    res = res.split(linesep)[:-1]
-    title = res[0]
-    names = res[1:]
-
-    index = title.index("NAME")
-
-    names = [vm[index:] for vm in names]
+    names = [vm["name"] for vm in res]
     
     if name:
+        name = get_value_ignore_case(VM_NAME_MAPPING, name, name)
         names = [vm for vm in names if re.search(name, vm, re.IGNORECASE)]
 
     if len(names) == 0:
