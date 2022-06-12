@@ -41,7 +41,6 @@ if __name__ == "__main__":
         if shutil.which("{}-{}".format(cmd, p)):
             os.system("{}-{}".format(cmd, p))
         else:
-            print(p)
             if not os.path.exists(p):
                 raise FileNotFoundError("{} not found!".format(p))
             
