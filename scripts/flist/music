@@ -4,7 +4,7 @@ OLDIFS=$IFS
 IFS="
 "
 
-CONFIG=$HOME/.f2kconfig
+CONFIG=$HOME/.config/f2kconfig
 
 RELOAD_REQUIRED=1
 
