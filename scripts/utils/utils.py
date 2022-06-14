@@ -218,7 +218,7 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
     block = get_split_line(splitter, length=length) + "\n"
 
     for line in text:
-        block += splitter * width + get_split_line(" ", line, length - width * 2) + splitter * width + "\n"
+        block += splitter * width + get_split_line(" ", line, length - width * 2)[1:] + splitter * width + "\n"
 
     block += get_split_line(splitter, length=length)
 
