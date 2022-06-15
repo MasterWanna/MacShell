@@ -4,12 +4,6 @@ from argparse import ArgumentParser
 
 from utils import *
 
-try:
-    import audioread
-except ImportError:
-    print("This script requires the 'audioread' python libraries.")
-    print("Please install and try again.")
-    exit(1)
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Show Music Info")
@@ -17,6 +11,13 @@ if __name__ == "__main__":
     parser.add_argument("paths", type=str, default=[], nargs="*", help="music file path")
 
     args = parser.parse_args()
+
+    try:
+        import audioread
+    except ImportError:
+        print("This script requires the 'audioread' python libraries.")
+        print("Please install and try again.")
+        exit(1)
 
     paths: List[str] = args.paths
 

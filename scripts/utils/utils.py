@@ -66,18 +66,26 @@ linesep = os.linesep
 line_sep = ord(linesep)
 
 
-def run_command_s(cmd: Union[str, List[str]]) -> int:
-    return run_command(cmd, False)
+def run_command_s(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:
+    return run_command(cmd, False, input)
 
 
-def run_command(cmd: Union[str, List[str]], echo: bool = True) -> int:
+def run_command(cmd: Union[str, List[str]], echo: bool = True, input: Union[Any, List[Any]] = None) -> int:
     if echo:
         print(cmd)
 
     if isinstance(cmd, list):
         cmd = "; ".join(cmd)
 
-    return os.system(cmd)
+    if input:
+        pipe = os.popen(cmd, "w")
+        if isinstance(input, list):
+            input = to_string(input, linesep)
+        pipe.write(input)
+
+        return pipe.close()
+    else:
+        return os.system(cmd)
 
 
 def read_command(cmd: Union[str, List[str]]) -> Tuple[int, str]:

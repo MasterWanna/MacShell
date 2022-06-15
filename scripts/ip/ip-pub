@@ -3,17 +3,18 @@
 from argparse import ArgumentParser
 import json
 
-try:
-    import requests
-except ImportError:
-    print("This script requires the 'requests' python libraries.")
-    print("Please install and try again.")
-    exit(1)
 
 if __name__ == "__main__":
     parser = ArgumentParser(description="Get Public IP Address")
 
     args = parser.parse_args()
+
+    try:
+        import requests
+    except ImportError:
+        print("This script requires the 'requests' python libraries.")
+        print("Please install and try again.")
+        exit(1)
 
     obj = requests.get('http://ipinfo.io').json()
     obj.pop('readme')

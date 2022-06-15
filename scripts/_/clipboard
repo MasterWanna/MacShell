@@ -1,0 +1,24 @@
+#!/usr/bin/python3
+
+from argparse import ArgumentParser
+
+from utils import *
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Get Or Set Clipboard")
+
+    parser.add_argument("-t", "--text", type=str, default=None, help="set clipboard text")
+
+    args = parser.parse_args()
+
+    text: str = args.text
+    
+    if text is None:
+        res = read_command("pbpaste")[1]
+
+        print(get_split_line(text="Clipboard Text"))
+        print(res)
+        print(get_split_line(text="End"))
+    else:
+        run_command_s("pbcopy", input=text)
