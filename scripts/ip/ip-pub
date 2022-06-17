@@ -1,7 +1,8 @@
-#!python3
+#!/usr/bin/python3
 
-from argparse import ArgumentParser
 import json
+
+from utils import *
 
 
 if __name__ == "__main__":
@@ -9,14 +10,14 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    try:
-        import requests
-    except ImportError:
-        print("This script requires the 'requests' python libraries.")
-        print("Please install and try again.")
+    content = read_webpage('http://ipinfo.io')
+
+    if not content:
+        print("Error: Could not get IP Address")
         exit(1)
 
-    obj = requests.get('http://ipinfo.io').json()
+    obj = json.loads(content)
+
     obj.pop('readme')
 
     print(json.dumps(obj, indent=2))

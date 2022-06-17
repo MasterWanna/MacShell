@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from argparse import ArgumentParser
 import sqlite3
 import time
 

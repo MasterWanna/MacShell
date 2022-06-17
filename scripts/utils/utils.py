@@ -1,8 +1,10 @@
+from argparse import ArgumentParser
 import fcntl
 import math
 import os
 from pathlib import Path
 import re
+import six.moves.urllib.request as urllib
 from sqlite3 import Connection
 import struct
 import termios
@@ -96,6 +98,14 @@ def read_command(cmd: Union[str, List[str]]) -> Tuple[int, str]:
     res = pipe.read()
 
     return (pipe.close(), res)
+
+
+def read_webpage(url: str) -> str:
+    try:
+        with urllib.urlopen(url) as f:
+            return f.read().decode("utf-8")
+    except Exception as e:
+        return ""
 
 
 def get_filename(path: str) -> str:
