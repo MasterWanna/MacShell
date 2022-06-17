@@ -1,10 +1,12 @@
+#!/usr/bin/python3
+
 from argparse import ArgumentParser
 import fcntl
 import math
 import os
 from pathlib import Path
 import re
-import six.moves.urllib.request as urllib
+import urllib.request as urllib
 from sqlite3 import Connection
 import struct
 import termios
@@ -339,3 +341,11 @@ def classify_repos(conn: Connection) -> List[str]:
         conn.commit()
 
     return git_repo_paths
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="MacShell Utils")
+
+    parser.parse_args()
+
+    print("{} provides varaible and functions for MacShell.".format(get_file_fullname(__file__)))
