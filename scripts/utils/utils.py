@@ -26,7 +26,7 @@ def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) ->
     return default
 
 
-def get_real_string_len(string: str) -> int:
+def get_real_string_len(string: str) -> Union[float, int]:
     length = 0
     for ch in string:
         if '\u1000' <= ch:
@@ -145,7 +145,9 @@ def get_terminal_size():
 
 def align_columns(strs: Iterable[str], width: int = -1) -> str:
     items = list(strs)
-    max_len = max(len(s) for s in items)
+    max_len = max(get_real_string_len(s) for s in items)
+
+    len_diff = [get_real_string_len(s) - len(s) for s in items]
 
     if width <= 0:
         width = get_terminal_size()[1]
@@ -158,7 +160,7 @@ def align_columns(strs: Iterable[str], width: int = -1) -> str:
         if (i + 1) % items_line == 0:
             formatted += items[i] + linesep
         else:
-            formatted += items[i].ljust(max_len + 1)
+            formatted += items[i].ljust(max_len - len_diff[i] + 1)
 
     return formatted
 
@@ -174,15 +176,6 @@ def to_string(strs: Iterable[str], splitter: str = ", ", sort: bool = False) -> 
         return splitter.join(strs)
 
 
-def string_expand(string: str, length: int) -> str:
-    str_len = len(string)
-
-    quotient = int(length / str_len)
-    remainder = length % str_len
-
-    return string * quotient + string[:remainder]
-
-
 def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> str:
     if len(splitter) != 1:
         raise ValueError("Splitter should a single char.")
@@ -193,8 +186,10 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
     if length <= 0:
         raise ValueError("Length value out of range.")
 
+    real_len = get_real_string_len(splitter)
+
     if text is None:
-        return "\r" + splitter * length
+        return "\r" + splitter * (length // real_len)
     else:
         textarr = re.split(r'\s+', text)
 
@@ -208,11 +203,11 @@ def get_split_line(splitter: str = '-', text: str = None, length: int = 0) -> st
 
         string = to_string(textarr, " ")
 
-        str_length = len(string)
+        str_length = get_real_string_len(string)
         if str_length + 4 > length:
             raise ValueError("Text too long : " + string)
 
-        remaining = length - str_length - 2
+        remaining = (length - str_length - 2) // real_len
         left = int(remaining / 2)
         right = remaining - left
 
@@ -249,14 +244,16 @@ def list_table(title: Union[List[str], int], args: List[List[Any]]) -> str:
     if isinstance(title, int):
         max_len = [0] * title
     else:
-        max_len = [len(t) for t in title]
+        max_len = [get_real_string_len(t) for t in title]
 
-    for arg in args:
-        for i, arg_item in enumerate(arg):
+    str_args = [[str(a) for a in arg] for arg in args]
+
+    for str_arg in str_args:
+        for i, arg_item in enumerate(str_arg):
             if isinstance(arg_item, str):
-                arg_item_len = len(arg_item)
+                arg_item_len = get_real_string_len(arg_item)
             else:
-                arg_item_len = len(str(arg_item))
+                arg_item_len = get_real_string_len(str(arg_item))
 
             if arg_item_len > max_len[i]:
                 max_len[i] = arg_item_len
@@ -264,11 +261,13 @@ def list_table(title: Union[List[str], int], args: List[List[Any]]) -> str:
     table = get_split_line() + "\n"
 
     if isinstance(title, list):
-        title_str = to_string([title[i].ljust(max_len[i]) for i in range(len(max_len))], "  ") + "\n"
+        title_len_diff = [get_real_string_len(t) - len(t) for t in title]
+        title_str = to_string([title[i].ljust(max_len[i] - title_len_diff[i]) for i in range(len(max_len))], "  ") + "\n"
         table += title_str + get_split_line() + "\n"
     
-    for arg in args:
-        arg_str = to_string([arg[i].ljust(max_len[i]) for i in range(len(max_len))], "  ") + "\n"
+    for i, str_arg in enumerate(str_args):
+        arg_len_diff = [get_real_string_len(str_a) - len(str_a) for str_a in str_arg]
+        arg_str = to_string([str(str_arg[j]).ljust(max_len[j] - arg_len_diff[j]) for j in range(len(max_len))], "  ") + "\n"
         table += arg_str + get_split_line() + "\n"
 
     return table
