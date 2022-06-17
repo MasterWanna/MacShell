@@ -230,10 +230,12 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
     if isinstance(width, float):
         width = int(width * length)
 
+    real_len = get_real_string_len(splitter)
+
     block = get_split_line(splitter, length=length) + "\n"
 
     for line in text:
-        block += splitter * width + get_split_line(" ", line, length - width * 2)[1:] + splitter * width + "\n"
+        block += splitter * width + get_split_line(" ", line, (length // real_len - width * 2) * real_len)[1:] + splitter * width + "\n"
 
     block += get_split_line(splitter, length=length)
 
