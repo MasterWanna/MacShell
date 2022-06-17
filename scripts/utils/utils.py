@@ -6,6 +6,8 @@ import math
 import os
 from pathlib import Path
 import re
+import sys
+import tty
 import urllib.request as urllib
 from sqlite3 import Connection
 import struct
@@ -68,6 +70,19 @@ VM_NAME_MAPPING = {
 
 linesep = os.linesep
 line_sep = ord(linesep)
+
+
+def getchar() -> str:
+    fd = sys.stdin.fileno()
+    old_mode = termios.tcgetattr(fd)
+    try:
+        mode = termios.tcgetattr(fd)
+        mode[tty.LFLAG] = mode[tty.LFLAG] & ~termios.ICANON
+        termios.tcsetattr(fd, termios.TCSANOW, mode)
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSANOW, old_mode)
+    return ch
 
 
 def run_command_s(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:

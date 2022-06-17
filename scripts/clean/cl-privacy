@@ -4,16 +4,16 @@ from utils import *
 
 
 if __name__ == "__main__":
-    parser = ArgumentParser(description="Clean Dock Settings")
+    parser = ArgumentParser(description="Clean System Privacy Settings")
 
-    parser.add_argument('-y', '--yes', action='store_true', help='comfirm to clean dock settings')
+    parser.add_argument('-y', '--yes', action='store_true', help='comfirm to clean system privacy settings')
 
     args = parser.parse_args()
 
     yes: bool = args.yes
 
     if not yes:
-        print("This script will clean dock settings.")
+        print("This script will clean system privacy settings.")
         print("Do you want to continue? Y/[N]: ", end="", flush=True)
         option = getchar()
         if option != os.linesep:
@@ -23,8 +23,4 @@ if __name__ == "__main__":
             exit(1)
     
     print("Cleaning...")
-    run_command_s([
-            "defaults write com.apple.dock ResetLaunchPad -bool TRUE",
-            "rm $HOME/Library/Application\ Support/Dock/*.db",
-            "killall Dock"
-        ])
+    run_command_s("tccutil reset All")
