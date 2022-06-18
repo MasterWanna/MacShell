@@ -31,7 +31,7 @@ def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) ->
 def get_real_string_len(string: str) -> Union[float, int]:
     length = 0
     for ch in string:
-        if '\u1000' <= ch:
+        if '\u1100' <= ch < '\u1200' or '\u2000' <= ch:
             length += 2
         else:
             length += 1
@@ -247,46 +247,47 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
 
     real_len = get_real_string_len(splitter)
 
-    block = get_split_line(splitter, length=length) + "\n"
+    block = get_split_line(splitter, length=length) + linesep
 
     for line in text:
-        block += splitter * width + get_split_line(" ", line, (length // real_len - width * 2) * real_len)[1:] + splitter * width + "\n"
+        block += splitter * width + get_split_line(" ", line, (length // real_len - width * 2) * real_len)[1:] + splitter * width + linesep
 
     block += get_split_line(splitter, length=length)
 
     return "\r" + block
 
 
-def list_table(title: Union[List[str], int], args: List[List[Any]]) -> str:
-    if isinstance(title, int):
-        max_len = [0] * title
+def list_table(title: Union[List[str], int], args: List[List[Any]], format: List[str] = None) -> str:
+    titled = not isinstance(title, int)
+    if titled:
+        cols = len(title)
     else:
-        max_len = [get_real_string_len(t) for t in title]
+        cols = title
 
-    str_args = [[str(a) for a in arg] for arg in args]
+    for arg in args:
+        if len(arg) != cols:
+            raise ValueError("Argument length mismatch.")
 
-    for str_arg in str_args:
-        for i, arg_item in enumerate(str_arg):
-            if isinstance(arg_item, str):
-                arg_item_len = get_real_string_len(arg_item)
-            else:
-                arg_item_len = get_real_string_len(str(arg_item))
-
-            if arg_item_len > max_len[i]:
-                max_len[i] = arg_item_len
-
-    table = get_split_line() + "\n"
-
-    if isinstance(title, list):
-        title_len_diff = [get_real_string_len(t) - len(t) for t in title]
-        title_str = to_string([title[i].ljust(max_len[i] - title_len_diff[i]) for i in range(len(max_len))], "  ") + "\n"
-        table += title_str + get_split_line() + "\n"
+    if format:
+        if len(format) != cols:
+            raise ValueError("Format length mismatch.")
+    else:
+        format = ["{}"] * cols
     
-    for i, str_arg in enumerate(str_args):
-        arg_len_diff = [get_real_string_len(str_a) - len(str_a) for str_a in str_arg]
-        arg_str = to_string([str(str_arg[j]).ljust(max_len[j] - arg_len_diff[j]) for j in range(len(max_len))], "  ") + "\n"
-        table += arg_str + get_split_line() + "\n"
+    str_args = [[format[i].format(arg[i]) for i in range(cols)] for arg in args]
 
+    if titled:
+        str_args.insert(0, title)
+
+    max_len = [max([get_real_string_len(str_arg[i]) for str_arg in str_args]) for i in range(cols)]
+
+    table = get_split_line() + linesep
+    
+    for str_arg in str_args:
+        arg_str = to_string([str_arg[i].ljust(max_len[i] - get_real_string_len(str_arg[i]) + len(str_arg[i])) for i in range(cols)], "  ") + linesep
+
+        table += arg_str + get_split_line() + linesep
+        
     return table
 
 
