@@ -16,16 +16,4 @@ if __name__ == "__main__":
     text: str = args.text
     cmd: List[str] = args.cmd
 
-    command = to_string(cmd, ' ')
-
-    text = text if text else command
-    
-    if line:
-        print(get_split_line(text=text))
-    else:
-        print(get_split_block(text=text))
-    
-    run_command(command)
-
-    if not line:
-        print(get_split_block(text="Done!"))
+    exec_command(cmd, text, line)

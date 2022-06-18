@@ -6,15 +6,10 @@ from utils import *
 
 
 def update(name: str, path: str):
-    print(get_split_block(text="conda pkgs for {}".format(name)))
-    run_command("conda update -n {} --all -y".format(name))
-    print(get_split_block(text="Done!"))
+    exec_command("conda update -n {} --all -y".format(name), "conda pkgs for {}".format(name))
     if os.path.isfile("{}/upgrade-pip".format(path)):
-        print(get_split_block(text="pip pkgs for {}".format(name)))
-        run_command("{}/bin/python -m pip install -U $(cat {}/upgrade-pip)".format(path, path))
-        print(get_split_block(text="clean pip cache for {}".format(name)))
-        run_command("{}/bin/python -m pip cache remove '*'".format(path))
-        print(get_split_block(text="Done!"))
+        exec_command("{}/bin/python -m pip install -U $(cat {}/upgrade-pip)".format(path, path), "pip pkgs for {}".format(name), end=False)
+        exec_command("{}/bin/python -m pip cache remove '*'".format(path), "clean pip cache for {}".format(name))
 
 
 if __name__ == "__main__":
@@ -56,6 +51,4 @@ if __name__ == "__main__":
     for name in updateenv:
         update(name, envs[name])
 
-    print(get_split_block(text="conda clean"))
-    run_command("conda clean -a -y")
-    print(get_split_block(text="Done!"))
+    exec_command("conda clean -a -y", "clean conda cache")

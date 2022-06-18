@@ -116,6 +116,22 @@ def read_command(cmd: Union[str, List[str]]) -> Tuple[int, str]:
     return (pipe.close(), res)
 
 
+def exec_command(cmd: str, text: str = None, line: bool = False, end: bool = True) -> str:
+    command = to_string(cmd, ' ')
+
+    text = text if text else command
+    
+    if line:
+        print(get_split_line(text=text))
+    else:
+        print(get_split_block(text=text))
+    
+    run_command(command)
+
+    if end and not line:
+        print(get_split_block(text="Done!"))
+
+
 def read_webpage(url: str) -> str:
     try:
         with urllib.urlopen(url) as f:
