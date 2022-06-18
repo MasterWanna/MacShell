@@ -14,9 +14,9 @@ def main(stdscr: window):
         char = chr(i)
         try:
             stdscr.addstr(0, 0, char * 5)
-            length[char] = stdscr.getyx()[1] / 5
+            length[char] = stdscr.getyx()[1] // 5
         except:
-            length[char] = 0.0
+            length[char] = 0
 
     curses.endwin()
 
@@ -30,4 +30,4 @@ if __name__ == "__main__":
 
     curses.wrapper(main)
 
-    pickle.dump(length, open("{}/.config/term-charlen.pkl".format(HOME), "wb"))
+    pickle.dump(length, open(charlen, "wb"))
