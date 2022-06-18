@@ -23,7 +23,7 @@ if __name__ == "__main__":
             exit(1)
     
     print("Cleaning...")
-    run_command_s([
+    run_command([
             "defaults write com.apple.dock ResetLaunchPad -bool TRUE",
             "rm $HOME/Library/Application\ Support/Dock/*.db",
             "killall Dock"

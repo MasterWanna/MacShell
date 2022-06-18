@@ -72,6 +72,8 @@ if __name__ == '__main__':
     for file in glob.glob("./scripts/*/*"):
         if os.path.isfile(file):
             shutil.copy(file, "./bin/{}".format(os.path.basename(file)))
+            if not file.startswith("./scripts/utils/"):
+                changeexec("./bin/{}".format(os.path.basename(file)))
 
     if os.path.isfile("./bin/__init__.py"):
         os.remove("./bin/__init__.py")
@@ -120,7 +122,6 @@ if __name__ == '__main__':
         for shell in sorted(os.listdir("./bin")):
             install.write("{}{}".format(shell, os.linesep))
 
-            changeexec("./bin/{}".format(shell))
             shutil.copy("./bin/{}".format(shell),
                         "/usr/local/bin/{}".format(shell))
 

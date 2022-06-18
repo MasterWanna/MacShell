@@ -75,7 +75,7 @@ def decode_passwd() -> Union[str, None]:
 
 
 def check_passwd(pwd: str) -> bool:
-    return run_command_s("printf {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
+    return run_command("printf {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
 
 
 if __name__ == "__main__":
@@ -103,4 +103,4 @@ if __name__ == "__main__":
             print("Wrong password!")
 
     sys.argv[0] = "/usr/bin/sudo"
-    run_command_s(to_string(sys.argv, " "))
+    run_command(to_string(sys.argv, " "))

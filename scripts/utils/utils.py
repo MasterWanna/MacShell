@@ -1,10 +1,9 @@
-#!/usr/bin/python3
-
 from argparse import ArgumentParser
 import fcntl
 import math
 import os
 from pathlib import Path
+import pickle
 import re
 import sys
 import tty
@@ -19,23 +18,25 @@ from typing import Any, Dict, Iterable, List, Tuple, Union
 
 char_A = ord('A')
 char_0 = ord('0')
+charlen_obj = None
 
 
-def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) -> Union[str, Any]:
+def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) -> Any:
     for k, v in dic.items():
         if k.lower() == key.lower():
             return v
     return default
 
 
-def get_real_string_len(string: str) -> Union[float, int]:
-    length = 0
-    for ch in string:
-        if '\u1100' <= ch < '\u1200' or '\u2000' <= ch:
-            length += 2
-        else:
-            length += 1
-    return length
+def get_real_string_len(string: str) -> int:
+    global charlen_obj
+    if charlen_obj is None:
+        if not os.path.exists(charlen):
+            print("Must run `charlen` first!")
+            run_command("charlen")
+        charlen_obj = pickle.load(open(charlen, "rb"))
+        
+    return int(sum(charlen_obj[ch] for ch in string))
 
 
 def byte_max_len(base: int) -> int:
@@ -68,6 +69,7 @@ def format_int_base(num: int, base: int) -> str:
 
 HOME = os.getenv("HOME")
 db_path = "{}/.config/shell-db.db".format(HOME)
+charlen = "{}/.config/term-charlen.pkl".format(HOME)
 VM_NAME_MAPPING = {
     "redhat": "Red Hat"
 }
@@ -89,14 +91,7 @@ def getchar() -> str:
     return ch
 
 
-def run_command_s(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:
-    return run_command(cmd, False, input)
-
-
-def run_command(cmd: Union[str, List[str]], echo: bool = True, input: Union[Any, List[Any]] = None) -> int:
-    if echo:
-        print(cmd)
-
+def run_command(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:
     if isinstance(cmd, list):
         cmd = "; ".join(cmd)
 
@@ -349,7 +344,7 @@ def classify_repos(conn: Connection) -> List[str]:
     git_repo_remove = []
 
     for path in local_repos:
-        if run_command_s("git -C {} rev-parse --show-toplevel &> /dev/null".format(path)):
+        if run_command("git -C {} rev-parse --show-toplevel &> /dev/null".format(path)):
             git_repo_remove.append(path)
         else:
             git_repo_paths.append(path)

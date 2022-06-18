@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
     print(get_split_block(text="Snapshot <{}> of <{}>".format(snapname, vm)))
 
-    if run_command_s([
+    if run_command([
             "sudo true || exit 1",
             "sudo date -n 0101000000.00 &> /dev/null",
             "/usr/local/bin/prlctl snapshot-switch '{}' -i '{}'".format(vm, snapid),

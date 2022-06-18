@@ -25,7 +25,7 @@ if __name__ == "__main__":
     else:
         print(get_split_block(text=text))
     
-    run_command_s(command)
+    run_command(command)
 
     if not line:
         print(get_split_block(text="Done!"))

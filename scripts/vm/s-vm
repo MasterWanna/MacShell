@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     print(get_split_block(text=vm))
 
-    if run_command_s([
+    if run_command([
             "sudo true || exit 1",
             "sudo date -n 0101000000.00 &> /dev/null",
             "/usr/local/bin/prlctl start '{}'".format(vm),

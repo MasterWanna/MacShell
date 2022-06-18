@@ -7,7 +7,7 @@ from utils import *
 
 def show_git_repo(path: str) -> None:
     print(path.ljust(max_length - get_real_string_len(path) + len(path)) + " : ", end="", flush=True)
-    run_command_s("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
+    run_command("git -C {} remote -v | grep fetch | awk '{{print $2}}'".format(path))
 
 
 if __name__ == "__main__":

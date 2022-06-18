@@ -7,13 +7,13 @@ from utils import *
 
 def update(name: str, path: str):
     print(get_split_block(text="conda pkgs for {}".format(name)))
-    run_command_s("conda update -n {} --all -y".format(name))
+    run_command("conda update -n {} --all -y".format(name))
     print(get_split_block(text="Done!"))
     if os.path.isfile("{}/upgrade-pip".format(path)):
         print(get_split_block(text="pip pkgs for {}".format(name)))
-        run_command_s("{}/bin/python -m pip install -U $(cat {}/upgrade-pip)".format(path, path))
+        run_command("{}/bin/python -m pip install -U $(cat {}/upgrade-pip)".format(path, path))
         print(get_split_block(text="clean pip cache for {}".format(name)))
-        run_command_s("{}/bin/python -m pip cache remove '*'".format(path))
+        run_command("{}/bin/python -m pip cache remove '*'".format(path))
         print(get_split_block(text="Done!"))
 
 
@@ -57,5 +57,5 @@ if __name__ == "__main__":
         update(name, envs[name])
 
     print(get_split_block(text="conda clean"))
-    run_command_s("conda clean -a -y")
+    run_command("conda clean -a -y")
     print(get_split_block(text="Done!"))

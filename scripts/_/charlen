@@ -1,0 +1,33 @@
+#!/usr/bin/python3
+
+from _curses import window
+import curses
+import pickle
+
+from utils import *
+
+
+def main(stdscr: window):
+    stdscr.clear()
+    
+    for i in range(0, 0x10000):
+        char = chr(i)
+        try:
+            stdscr.addstr(0, 0, char * 5)
+            length[char] = stdscr.getyx()[1] / 5
+        except:
+            length[char] = 0.0
+
+    curses.endwin()
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Update Char Length")
+
+    args = parser.parse_args()
+
+    length = {}
+
+    curses.wrapper(main)
+
+    pickle.dump(length, open("{}/.config/term-charlen.pkl".format(HOME), "wb"))
