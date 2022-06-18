@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+
+from io import IOBase
+
+from utils import *
+
+
+def read_file(inputstream: IOBase) -> None:
+    global char
+
+    for char in inputstream.read().decode("utf-8"):
+        char = ord(char)
+        if not no_linesep and char == line_sep:
+            print()
+        else:
+            print(format_int_base(char, base).rjust(max_len, "0"), end=" ")
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Read Byte Code from File")
+
+    parser.add_argument("-b", "--base", type=int, default=16)
+    parser.add_argument("-i", "--ignore-linesep", action="store_true")
+    parser.add_argument("files", type=str, nargs="*", help="file to read")
+
+    args = parser.parse_args()
+
+    base: int = args.base
+    no_linesep: bool = args.ignore_linesep
+    files: List[str] = args.files
+
+    max_len = char_max_len(base)
+
+    char = line_sep
+
+    if len(files) == 0:
+        read_file(sys.stdin.buffer)
+    else:
+        for path in files:
+            with open(path, "r") as f:
+                read_file(f)
+
+    if no_linesep or char != line_sep:
+        print()

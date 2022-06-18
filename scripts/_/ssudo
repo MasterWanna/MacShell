@@ -6,7 +6,6 @@
 
 import getpass
 import random
-import sys
 
 from utils import *
 

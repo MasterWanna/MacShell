@@ -39,7 +39,11 @@ def get_real_string_len(string: str) -> Union[float, int]:
 
 
 def byte_max_len(base: int) -> int:
-    return math.ceil(math.log(255, base))
+    return math.ceil(math.log(0xff, base))
+
+
+def char_max_len(base: int) -> int:
+    return math.ceil(math.log(0xffff, base))
 
 
 def format_int_base(num: int, base: int) -> str:

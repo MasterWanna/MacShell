@@ -1,22 +1,18 @@
 #!/usr/bin/python3
 
 from io import IOBase
-import sys
 
 from utils import *
 
 
 def read_file(inputstream: IOBase) -> None:
     global byte
-    try:
-        while True:
-            byte = inputstream.read(1)[0]
-            if not no_linesep and byte == line_sep:
-                print()
-            else:
-                print(format_int_base(byte, base).rjust(max_len, "0"), end=" ")
-    except (EOFError, IndexError):
-        pass
+    
+    for byte in inputstream.read():
+        if not no_linesep and byte == line_sep:
+            print()
+        else:
+            print(format_int_base(byte, base).rjust(max_len, "0"), end=" ")
 
 
 if __name__ == "__main__":
@@ -40,7 +36,7 @@ if __name__ == "__main__":
         read_file(sys.stdin.buffer)
     else:
         for path in files:
-            with open(path, "rb") as f:
+            with open(path, "r") as f:
                 read_file(f)
 
     if no_linesep or byte != line_sep:
