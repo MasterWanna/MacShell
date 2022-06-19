@@ -28,15 +28,25 @@ def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) ->
     return default
 
 
-def get_real_string_len(string: str) -> int:
+def get_char_real_len(string: str) -> int:
     global charlen_obj
     if charlen_obj is None:
         if not os.path.exists(charlen):
             print("Must run `charlen` first!")
             run_command("charlen")
         charlen_obj = pickle.load(open(charlen, "rb"))
-        
-    return int(sum(charlen_obj[ch] for ch in string))
+
+    string = string[0]
+
+    for k in charlen_obj:
+        if k >= string:
+            return charlen_obj[k]
+
+    raise Exception("Invalid character: {}".format(string))
+
+
+def get_real_string_len(string: str) -> int:
+    return int(sum(get_char_real_len(ch) for ch in string))
 
 
 def byte_max_len(base: int) -> int:
