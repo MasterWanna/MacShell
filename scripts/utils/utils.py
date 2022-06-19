@@ -19,6 +19,7 @@ from typing import Any, Dict, Iterable, List, Tuple, Union
 char_A = ord('A')
 char_0 = ord('0')
 charlen_obj = None
+charlen_key = None
 
 
 def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) -> Any:
@@ -29,17 +30,18 @@ def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) ->
 
 
 def get_char_real_len(string: str) -> int:
-    global charlen_obj
+    global charlen_obj, charlen_key
     if charlen_obj is None:
         if not os.path.exists(charlen):
             print("Must run `charlen` first!")
             run_command("charlen")
         charlen_obj = pickle.load(open(charlen, "rb"))
+        charlen_key = sorted(charlen_obj.keys(), reverse=True)
 
     string = string[0]
 
-    for k in charlen_obj:
-        if k >= string:
+    for k in charlen_key:
+        if k <= string:
             return charlen_obj[k]
 
     raise Exception("Invalid character: {}".format(string))
