@@ -1,0 +1,8 @@
+#!/bin/zsh
+
+if [ -e /Applications/Minecraft.app ]
+then
+    /Applications/Minecraft.app/Contents/Minecraft\ Updater.app/Contents/MacOS/nativeUpdater --nativePath /Applications/Minecraft.app --nativeStartupPath /Applications/Minecraft.app/Contents --nativeExecutable /Applications/Minecraft.app/Contents/MacOS/launcher
+else
+    echo "Minecraft not installed"
+fi
