@@ -104,12 +104,12 @@ def getchar() -> str:
 
 
 def run_command(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:
-    if isinstance(cmd, list):
+    if not isinstance(cmd, str):
         cmd = "; ".join(cmd)
 
     if input:
         pipe = os.popen(cmd, "w")
-        if isinstance(input, list):
+        if not isinstance(input, str):
             input = to_string(input, linesep)
         pipe.write(input)
 
@@ -129,7 +129,10 @@ def read_command(cmd: Union[str, List[str]]) -> Tuple[int, str]:
 
 
 def exec_command(cmd: str, text: str = None, line: bool = False, end: bool = True) -> str:
-    command = to_string(cmd, ' ')
+    if isinstance(cmd, str):
+        command = cmd
+    else:
+        command = to_string(cmd, ' ')
 
     text = text if text else command
     
