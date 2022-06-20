@@ -24,10 +24,10 @@ if __name__ == "__main__":
         exit(1)
 
     try:
-        info_table = [mutagen.File(path) for path in paths]
+        info_table = (mutagen.File(path) for path in paths)
     except mutagen.MutagenError as e:
         raise e.args[0]
 
-    info_table = [[get_file_fullname(info.filename), info.info.channels, info.info.sample_rate, info.info.length] for info in info_table]
+    info_table = ((get_file_fullname(info.filename), info.info.channels, info.info.sample_rate, info.info.length) for info in info_table)
 
     print(list_table(["File", "Channels", "Sample Rate", "Length"], info_table, ["{}", "{}", "{}", "{:.2f}"]), end="")

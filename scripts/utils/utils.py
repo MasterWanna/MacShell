@@ -192,7 +192,7 @@ def align_columns(strs: Iterable[str], width: int = -1) -> str:
     items = list(strs)
     max_len = max(get_real_string_len(s) for s in items)
 
-    len_diff = [get_real_string_len(s) - len(s) for s in items]
+    len_diff = (get_real_string_len(s) - len(s) for s in items)
 
     if width <= 0:
         width = get_terminal_size()[1]
@@ -205,7 +205,7 @@ def align_columns(strs: Iterable[str], width: int = -1) -> str:
         if (i + 1) % items_line == 0:
             formatted += items[i] + linesep
         else:
-            formatted += items[i].ljust(max_len - len_diff[i] + 1)
+            formatted += items[i].ljust(max_len - next(len_diff) + 1)
 
     return formatted
 
@@ -314,7 +314,7 @@ def list_table(title: Union[List[str], int], args: List[List[Any]], format: List
     table = get_split_line() + linesep
     
     for str_arg in str_args:
-        arg_str = to_string([str_arg[i].ljust(max_len[i] - get_real_string_len(str_arg[i]) + len(str_arg[i])) for i in range(cols)], "  ") + linesep
+        arg_str = to_string((str_arg[i].ljust(max_len[i] - get_real_string_len(str_arg[i]) + len(str_arg[i])) for i in range(cols)), "  ") + linesep
 
         table += arg_str + get_split_line() + linesep
         
@@ -384,7 +384,7 @@ def classify_repos(conn: Connection) -> List[str]:
         print("Remove non-existent git repo : " +
               to_string(git_repo_remove, sort=True))
         conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name),
-                         [(path,) for path in git_repo_remove])
+                         ((path,) for path in git_repo_remove))
         conn.commit()
 
     return git_repo_paths

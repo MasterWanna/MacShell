@@ -15,6 +15,6 @@ if __name__ == '__main__':
     cmds = read_command("compgen -c")[1].split()
 
     if name:
-        cmds = [c for c in cmds if re.search(name, c)]
+        cmds = (c for c in cmds if re.search(name, c))
 
     print(to_string(list(dict.fromkeys(cmds)), linesep, True))

@@ -36,7 +36,7 @@ if __name__ == "__main__":
                 print("Git repo : " + realpath + " not found.")
                 exit(1)
 
-        conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name), [(path,) for path in remove_list])
+        conn.executemany("delete from '{}' where path = ?".format(git_repo_table_name), ((path,) for path in remove_list))
         print("Removed : " + to_string(remove_list))
     else:
         add_list = []
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                 print("Git repo : " + realpath + " already added.")
                 exit(1)
 
-        conn.executemany("insert into '{}' values (?)".format(git_repo_table_name), [(path,) for path in add_list])
+        conn.executemany("insert into '{}' values (?)".format(git_repo_table_name), ((path,) for path in add_list))
         print("Added : " + to_string(add_list))
 
     conn.commit()
