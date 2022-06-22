@@ -164,6 +164,15 @@ def get_file_fullname(path: str) -> str:
 
 
 def get_terminal_size():
+    """
+        import curses
+        win = curses.initscr()
+        size = win.getmaxyx()
+        curses.endwin()
+        print(size)
+    """
+    # above code have extra bytes before printed out string but can also get correct terminal size
+
     def ioctl_GWINSZ(fd):
         try:
             cr = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
