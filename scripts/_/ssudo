@@ -31,34 +31,24 @@ def encode_passwd(passwd: str) -> None:
 
     pos = random.randint(0, len(passwd))
 
-    with open(passwd_path, "w") as f:
-        f.write("{:02x} ".format(pos))
+    passwd_arr = [format_int_base(ord(c) * encoder % 256, 16, 2) for c in passwd]
 
-        bytearr = bytes(passwd, "utf-8")
+    passwd_arr.insert(pos, format_int_base(decoder, 16, 2))
+    passwd_arr.insert(0, format_int_base(pos, 16, 2))
 
-        for i in range(pos):
-            f.write("{:02x} ".format(bytearr[i] * encoder % 256))
-
-        f.write("{:02x} ".format(decoder))
-
-        for i in range(pos, len(passwd)):
-            f.write("{:02x} ".format(bytearr[i] * encoder % 256))
-
-        f.write(os.linesep)
+    write_file(passwd_path, passwd_arr, " ")
 
 
 def decode_passwd() -> Union[str, None]:
-
     if not os.path.exists(passwd_path):
         return None
 
-    with open(passwd_path, "r") as f:
-        passwd_arr = f.readline().strip()
+    passwd_arr = read_file(passwd_path).strip()
 
     if len(passwd_arr) == 0:
         return None
 
-    passwd_arr = passwd_arr.split(" ")
+    passwd_arr = passwd_arr.split()
 
     pos = int(passwd_arr[0], 16) + 1
     decoder = int(passwd_arr[pos], 16)
@@ -75,7 +65,7 @@ def decode_passwd() -> Union[str, None]:
 
 
 def check_passwd(pwd: str) -> bool:
-    return run_command("printf {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
+    return run_command("echo {} | /usr/bin/sudo -S true &> /dev/null".format(pwd)) == 0
 
 
 if __name__ == "__main__":

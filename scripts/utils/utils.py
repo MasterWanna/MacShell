@@ -60,10 +60,10 @@ def byte_max_len(base: int) -> int:
 
 
 def char_max_len(base: int) -> int:
-    return get_transformation_len(0xffff, base)
+    return get_transformation_len(0x10ffff, base)
 
 
-def format_int_base(num: int, base: int) -> str:
+def format_int_base(num: int, base: int, length = 0) -> str:
     format_num = ""
 
     while num != 0:
@@ -76,6 +76,9 @@ def format_int_base(num: int, base: int) -> str:
             format_num = chr(char_0 + remainder) + format_num
 
         num = quotient
+
+    if length > 0:
+        format_num = format_num.zfill(length)
 
     return format_num
 
@@ -151,6 +154,11 @@ def exec_command(cmd: str, text: str = None, line: bool = False, end: bool = Tru
         print(get_split_block(text="Done!"))
 
 
+def read_file(path: str) -> str:
+    with open(path, "r") as f:
+        return f.read()
+
+
 def read_webpage(url: str) -> str:
     try:
         with urllib.urlopen(url) as f:
@@ -158,6 +166,18 @@ def read_webpage(url: str) -> str:
     except:
         return ""
 
+
+def write_file(path: str, content: Union[str, List[str]], sep: str = linesep) -> None:
+    if isinstance(content, str):
+        content = [content]
+
+    with open(path, "w") as f:
+        for i, line in enumerate(content):
+            if i > 0:
+                f.write(sep)
+            f.write(line)
+
+        f.write(linesep)
 
 def get_filename(path: str) -> str:
     return Path(path).stem

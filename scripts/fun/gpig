@@ -7,15 +7,14 @@ from utils import *
 
 
 def int_to_pigs(val: int, length: int) -> str:
-    subs = format_int_base(val, base).zfill(length)
+    subs = format_int_base(val, base, length)
     for i, pig in enumerate(pigs):
         subs = subs.replace(str(i), pig)
     return subs
 
 
 def parse_file(file: str) -> None:
-    with open(file, "r") as f:
-        item = f.read()
+    item = read_file(file)
 
     if not item:
         print("File '{}' is empty".format(file))
@@ -65,8 +64,7 @@ def parse_file(file: str) -> None:
         else:
             encode.append(mapping[c])
 
-    with open(extend_filename(file, ".pig"), "w") as f:
-        f.writelines((line + linesep for line in encode))
+    write_file(extend_filename(file, ".pig"), encode)
 
 
 if __name__ == '__main__':

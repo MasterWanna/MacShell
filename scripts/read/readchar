@@ -5,7 +5,7 @@ from io import IOBase
 from utils import *
 
 
-def read_file(inputstream: IOBase) -> None:
+def read_file_to_char(inputstream: IOBase) -> None:
     global char
 
     for char in inputstream.read().decode("utf-8"):
@@ -13,7 +13,7 @@ def read_file(inputstream: IOBase) -> None:
         if not no_linesep and char == line_sep:
             print()
         else:
-            print(format_int_base(char, base).rjust(max_len, "0"), end=" ")
+            print(format_int_base(char, base, max_len), end=" ")
 
 
 if __name__ == "__main__":
@@ -34,11 +34,11 @@ if __name__ == "__main__":
     char = line_sep
 
     if len(files) == 0:
-        read_file(sys.stdin.buffer)
+        read_file_to_char(sys.stdin.buffer)
     else:
         for path in files:
             with open(path, "r") as f:
-                read_file(f)
+                read_file_to_char(f)
 
     if no_linesep or char != line_sep:
         print()
