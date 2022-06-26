@@ -51,12 +51,16 @@ def get_real_string_len(string: str) -> int:
     return int(sum(get_char_real_len(ch) for ch in string))
 
 
+def get_transformation_len(num: int, base: int) -> int:
+    return math.ceil(math.log(num, base))
+
+
 def byte_max_len(base: int) -> int:
-    return math.ceil(math.log(0xff, base))
+    return get_transformation_len(0xff, base)
 
 
 def char_max_len(base: int) -> int:
-    return math.ceil(math.log(0xffff, base))
+    return get_transformation_len(0xffff, base)
 
 
 def format_int_base(num: int, base: int) -> str:
@@ -151,12 +155,17 @@ def read_webpage(url: str) -> str:
     try:
         with urllib.urlopen(url) as f:
             return f.read().decode("utf-8")
-    except Exception as e:
+    except:
         return ""
 
 
 def get_filename(path: str) -> str:
     return Path(path).stem
+
+
+def extend_filename(path: str, extension: str) -> str:
+    finfo = Path(path)
+    return finfo.stem + extension + finfo.suffix
 
 
 def get_file_fullname(path: str) -> str:

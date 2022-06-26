@@ -1,0 +1,117 @@
+#!/usr/bin/python3
+
+from types import FunctionType
+from re import Pattern
+
+from utils import *
+
+
+def int_to_pigs(val: int, length: int) -> str:
+    subs = format_int_base(val, base).zfill(length)
+    for i, pig in enumerate(pigs):
+        subs = subs.replace(str(i), pig)
+    return subs
+
+
+def parse_file(file: str) -> None:
+    with open(file, "r") as f:
+        item = f.read()
+
+    if not item:
+        print("File '{}' is empty".format(file))
+        return
+
+    encode = []
+
+    while True:
+        for macro in macros:
+            match = macro[0].match(item)
+            if match:
+                string = match.group()
+                macro[1](encode, match)
+                item = item[len(string):]
+                break
+        else:
+            break
+    
+    code = []
+    
+    while item:
+        for codeblock in codeblocks:
+            match = codeblock[0].match(item)
+            if match:
+                string = match.group()
+                if string[0] == '#':
+                    print("Statement of macro in PIGS destroys the aestetics of the code.")
+                    exit(1)
+                
+                codeblock[1](code, match)
+                item = item[len(string):]
+                break
+
+    mapping = {}
+
+    keys = list(dict.fromkeys([c for c in code]))
+    leng = get_transformation_len(len(keys), base)
+
+    for i, key in enumerate(keys):
+        val = int_to_pigs(i, leng)
+        mapping[key] = val
+        encode.append("#define {} {}".format(val, key))
+
+    for c in code:
+        if c[0] == '#':
+            encode.append(c)
+        else:
+            encode.append(mapping[c])
+
+    with open(extend_filename(file, ".pig"), "w") as f:
+        f.writelines((line + linesep for line in encode))
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(description='Generate PIG/PIG++ Code')
+
+    parser.add_argument("-p", "--pigs", type=str, default=None, help="PIG patterns")
+    parser.add_argument('files', type=str, nargs="+", help="c/c++ code")
+
+    args = parser.parse_args()
+
+    pigs: str = args.pigs
+    files: List[str] = args.files
+
+    if pigs is None:
+        pigs = ["🐗", "🐖"]
+    elif len(pigs) < 2:
+        print("PIG patterns must be at least 2 characters long.")
+        exit(1)
+    else:
+        pigs = [pig for pig in pigs]
+
+    base = len(pigs)
+
+    macros: List[Tuple[Pattern, FunctionType]] = [
+        (re.compile('\\s+', re.MULTILINE), lambda x, y: None),
+        (re.compile("#[^\n]+"), lambda x, y: x.append(y.group())),
+    ]
+
+    codeblocks: List[Tuple[Pattern, FunctionType]] = [
+        (re.compile('\\s+', re.MULTILINE), lambda x, y: None),
+        (re.compile('//[^\n]*'), lambda x, y: None),
+        (re.compile('/\\*.*\\*/', re.MULTILINE), lambda x, y: None),
+        (re.compile('[0-9a-zA-Z_]+'), lambda x, y: x.append(y.group())), 
+        (re.compile('"([^"]|\\")*"'), lambda x, y: x.append(y.group())), 
+        (re.compile('\'.\''), lambda x, y: x.append(y.group())), 
+        (re.compile(';'), lambda x, y: x.append(y.group())),
+        (re.compile('\\('), lambda x, y: x.append(y.group())),
+        (re.compile('\\)'), lambda x, y: x.append(y.group())),
+        (re.compile('\\['), lambda x, y: x.append(y.group())),
+        (re.compile('\\]'), lambda x, y: x.append(y.group())),
+        (re.compile('\\{'), lambda x, y: x.append(y.group())),
+        (re.compile('\\}'), lambda x, y: x.append(y.group())),
+        (re.compile('[^0-9a-zA-Z_\\s";]+'), lambda x, y: x.append(y.group())), 
+    ]
+
+    for file in files:
+        parse_file(file)
+    
