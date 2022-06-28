@@ -6,7 +6,7 @@ then
         echo "ip-$1: command not found"
         exit 1
     }
-    ip-$@
+    ip-"$@"
 else
     ip lo
 fi

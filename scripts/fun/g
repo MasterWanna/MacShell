@@ -1,6 +1,6 @@
 #!/bin/zsh
 
 __splitblock__ -t "EXECUTING IS ALWAYS FAILING"
-$@
+"$@"
 __splitblock__ -t "G G G G G G G G G G G G G G"
 exit $(($RANDOM%254+1))

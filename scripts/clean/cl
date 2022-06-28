@@ -11,4 +11,4 @@ command -v cl-$1 > /dev/null || {
     exit 1
 }
 
-cl-$@
+cl-"$@"

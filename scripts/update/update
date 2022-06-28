@@ -11,4 +11,4 @@ command -v update-$1 > /dev/null || {
     exit 1
 }
 
-update-$@
+update-"$@"

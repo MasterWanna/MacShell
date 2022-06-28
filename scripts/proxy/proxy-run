@@ -4,7 +4,7 @@ if [[ $# > 0 ]]
 then
     eval $(proxy-on)
     ip pub
-    $@
+    "$@"
     eval $(proxy-off)
 else
     echo "Usage: proxy-run <command>"
