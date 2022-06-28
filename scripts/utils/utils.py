@@ -1,6 +1,7 @@
 from argparse import ArgumentParser
 import fcntl
 import math
+import multiprocessing
 import os
 from pathlib import Path
 import pickle
@@ -11,7 +12,7 @@ import urllib.request as urllib
 from sqlite3 import Connection
 import struct
 import termios
-from typing import Any, Dict, Iterable, List, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Tuple, Union
 
 # computation utils
 
@@ -27,6 +28,21 @@ def get_value_ignore_case(dic: Dict[str, Any], key: str, default: Any = None) ->
         if k.lower() == key.lower():
             return v
     return default
+
+
+def exec_all(func: Callable, args: List[Any], parallel: bool = True) -> List[Any]:
+    if parallel:
+        pool = multiprocessing.Pool(processes=multiprocessing.cpu_count())
+
+        res = pool.map(func, args)
+
+        pool.close()
+        pool.join()
+
+    else:
+        res = [func(arg) for arg in args]
+
+    return res
 
 
 def get_char_real_len(string: str) -> int:

@@ -33,5 +33,4 @@ if __name__ == "__main__":
 
     max_length = max(get_real_string_len(path) for path in git_repo_paths)
 
-    for path in git_repo_paths:
-        show_git_repo(path)
+    exec_all(show_git_repo, git_repo_paths, parallel=False)

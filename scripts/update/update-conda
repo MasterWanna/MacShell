@@ -5,7 +5,8 @@ import json
 from utils import *
 
 
-def update(name: str, path: str):
+def update(name: str):
+    path = envs[name]
     exec_command("conda update -n {} --all -y".format(name), "conda pkgs for {}".format(name))
     if os.path.isfile("{}/upgrade-pip".format(path)):
         exec_command("{}/bin/python -m pip install -U $(cat {}/upgrade-pip)".format(path, path), "pip pkgs for {}".format(name), end=False)
@@ -47,7 +48,6 @@ if __name__ == "__main__":
         if len(pybase) > 0:
             updateenv.extend(sorted(devbase))
 
-    for name in updateenv:
-        update(name, envs[name])
+    exec_all(update, updateenv, parallel=False)
 
     exec_command("conda clean -a -y", "clean conda cache")

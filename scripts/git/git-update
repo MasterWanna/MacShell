@@ -45,5 +45,4 @@ if __name__ == "__main__":
 
     split_line = get_split_line()
 
-    for path in git_repo_paths:
-        update_git_repo(path)
+    exec_all(update_git_repo, git_repo_paths, parallel=False)
