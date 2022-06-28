@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import random
 from types import FunctionType
 from re import Pattern
 
@@ -51,6 +52,7 @@ def parse_file(file: str) -> None:
     mapping = {}
 
     keys = list(dict.fromkeys([c for c in code]))
+    random.shuffle(keys)
     leng = get_transformation_len(len(keys), base)
 
     for i, key in enumerate(keys):
