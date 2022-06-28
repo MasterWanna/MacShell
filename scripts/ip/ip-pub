@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import json
+from json import JSONDecodeError
 
 from utils import *
 
@@ -21,19 +22,29 @@ if __name__ == "__main__":
 
     res = exec_all(read_webpage, ["https://v4.ident.me/json", "https://v6.ident.me/json"])
 
-    if not res[0] and not res[1]:
+    try:
+        ipv4 = json.loads(res[0])
+        ipv4.pop("postal")
+    except JSONDecodeError:
+        ipv4 = None
+
+    try:
+        ipv6 = json.loads(res[1])
+        ipv6.pop("postal")
+    except JSONDecodeError:
+        ipv6 = None
+
+    if not ipv4 and not ipv6:
         print("Error: Could not get IP Address")
         exit(1)
 
-    if not res[0]:
-        obj = json.loads(res[1])
+    if not ipv4:
+        obj = {"v6": ipv6}
     
-    elif not res[1]:
-        obj = json.loads(res[0])
+    elif not ipv6:
+        obj = {"v4": ipv4}
 
     else:
-        ipv4 = json.loads(res[0])
-        ipv6 = json.loads(res[1])
-        obj = {"ipv4": ipv4, "ipv6": ipv6, **extract_duplicate(ipv4, ipv6)}
+        obj = {"v4": ipv4, "v6": ipv6, **extract_duplicate(ipv4, ipv6)}
 
     print(json.dumps(obj, indent=2))
