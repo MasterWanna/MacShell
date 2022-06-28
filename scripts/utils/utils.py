@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import pickle
 import re
+import signal
 import sys
 import tty
 import urllib.request as urllib
@@ -114,16 +115,34 @@ line_sep = ord(linesep)
 
 
 def getchar() -> str:
-    fd = sys.stdin.fileno()
+    input = open("/dev/tty", "r")
+    fd = input.fileno()
     old_mode = termios.tcgetattr(fd)
     try:
         mode = termios.tcgetattr(fd)
-        mode[tty.LFLAG] = mode[tty.LFLAG] & ~termios.ICANON
+        mode[tty.LFLAG] = mode[tty.LFLAG] & ~termios.ICANON & ~termios.ECHO
         termios.tcsetattr(fd, termios.TCSANOW, mode)
-        ch = sys.stdin.read(1)
+        ch = input.read(1)
     finally:
         termios.tcsetattr(fd, termios.TCSANOW, old_mode)
     return ch
+
+
+def run_with_timeout(func: Callable, args: List[Any], timeout: int) -> Any:
+    def handler(signum, frame):
+        raise Exception("Timeout")
+
+    signal.signal(signal.SIGALRM, handler)
+    signal.alarm(timeout)
+
+    try:
+        res = func(*args)
+    except:
+        return None
+
+    signal.alarm(0)
+
+    return res
 
 
 def run_command(cmd: Union[str, List[str]], input: Union[Any, List[Any]] = None) -> int:
