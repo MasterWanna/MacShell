@@ -91,25 +91,30 @@ if __name__ == '__main__':
     base = len(pigs)
 
     macros: List[Tuple[Pattern, FunctionType]] = [
-        (re.compile('\\s+', re.MULTILINE), lambda x, y: None),
-        (re.compile("#[^\n]+"), lambda x, y: x.append(y.group())),
+        (re.compile('\\s+', re.MULTILINE), lambda x, y: None), # whitespace
+        (re.compile("#[^\n]+"), lambda x, y: x.append(y.group())), # macros
     ]
 
     codeblocks: List[Tuple[Pattern, FunctionType]] = [
-        (re.compile('\\s+', re.MULTILINE), lambda x, y: None),
-        (re.compile('//[^\n]*'), lambda x, y: None),
-        (re.compile('/\\*.*\\*/', re.MULTILINE), lambda x, y: None),
-        (re.compile('[0-9a-zA-Z_]+'), lambda x, y: x.append(y.group())), 
-        (re.compile('"(\\\\"|[^"])*"'), lambda x, y: x.append(y.group())), 
-        (re.compile('\'.\''), lambda x, y: x.append(y.group())), 
-        (re.compile(';'), lambda x, y: x.append(y.group())),
-        (re.compile('\\('), lambda x, y: x.append(y.group())),
-        (re.compile('\\)'), lambda x, y: x.append(y.group())),
-        (re.compile('\\['), lambda x, y: x.append(y.group())),
-        (re.compile('\\]'), lambda x, y: x.append(y.group())),
-        (re.compile('\\{'), lambda x, y: x.append(y.group())),
-        (re.compile('\\}'), lambda x, y: x.append(y.group())),
-        (re.compile('[^0-9a-zA-Z_\\s";]+'), lambda x, y: x.append(y.group())), 
+        (re.compile('\\s+', re.MULTILINE), lambda x, y: None), # whitespace
+        (re.compile('//[^\n]*'), lambda x, y: None), # comment
+        (re.compile('/\\*.*\\*/', re.MULTILINE), lambda x, y: None), # comment
+        (re.compile('[a-zA-Z_][0-9a-zA-Z_]*'), lambda x, y: x.append(y.group())), # identifier
+        (re.compile('[0-9]+\\.[0-9]*[a-z]*', re.IGNORECASE), lambda x, y: x.append(y.group())), # float number
+        (re.compile('[0-9]*\\.[0-9]+[a-z]*', re.IGNORECASE), lambda x, y: x.append(y.group())), # float number
+        (re.compile('(0(b|x)?)?[0-9a-fA-F]+[a-z]*', re.IGNORECASE), lambda x, y: x.append(y.group())), # int number
+        (re.compile('"(\\\\"|[^"])*"'), lambda x, y: x.append(y.group())), # string
+        (re.compile('\'.\''), lambda x, y: x.append(y.group())), # char
+        (re.compile(';'), lambda x, y: x.append(y.group())), # semicolon
+        (re.compile('\\*'), lambda x, y: x.append(y.group())), # asterisk
+        (re.compile('\\&'), lambda x, y: x.append(y.group())), # ampersand
+        (re.compile('\\('), lambda x, y: x.append(y.group())), # left parenthesis
+        (re.compile('\\)'), lambda x, y: x.append(y.group())), # right parenthesis
+        (re.compile('\\['), lambda x, y: x.append(y.group())), # left bracket
+        (re.compile('\\]'), lambda x, y: x.append(y.group())), # right bracket
+        (re.compile('\\{'), lambda x, y: x.append(y.group())), # left brace
+        (re.compile('\\}'), lambda x, y: x.append(y.group())), # right brace
+        (re.compile('[^0-9a-zA-Z_\\s";\\(\\)\\[\\]\\{\\}*&]+'), lambda x, y: x.append(y.group())), # other
     ]
 
     for file in files:
