@@ -93,6 +93,8 @@ if __name__ == '__main__':
     macros: List[Tuple[Pattern, FunctionType]] = [
         (re.compile('\\s+', re.MULTILINE), lambda x, y: None), # whitespace
         (re.compile("#[^\n]+"), lambda x, y: x.append(y.group())), # macros
+        (re.compile('//[^\n]*'), lambda x, y: None), # comment
+        (re.compile('/\\*.*\\*/', re.MULTILINE), lambda x, y: None), # comment
     ]
 
     codeblocks: List[Tuple[Pattern, FunctionType]] = [
