@@ -360,6 +360,10 @@ def get_split_block(text: Union[str, List[str]], splitter: str = '-', length: in
     return "\r" + block
 
 
+def list_dict():
+    pass
+
+
 def list_table(title: Union[List[str], int], args: List[List[Any]], format: List[str] = None) -> str:
     titled = not isinstance(title, int)
     if titled:

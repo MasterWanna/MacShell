@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+
+from utils import *
+
+
+def get_group(cmd: str, c: bool = True) -> str:
+    if c:
+        return cmd.replace("gcc", "/g/")
+    else:
+        return cmd.replace("g++", "/g/")
+
+
+if __name__ == "__main__":
+    parser = ArgumentParser(description="Check C/C++ Default Standard")
+
+    parser.parse_args()
+
+    code = """
+        #include <stdio.h>
+
+        int main() {
+        #ifdef __STDC_VERSION__
+            printf("%ld", __STDC_VERSION__);
+        #endif
+        #ifdef __cplusplus
+            printf("%ld", __cplusplus);
+        #endif
+        }
+    """
+
+    tmpfile = "{}/cver.c".format(HOME)
+
+    with open(tmpfile, "w") as f:
+        f.write(code)
+
+    gcc = read_command('cmd -n "^(.*-)?gcc(-[0-9]+)?$"')[1].split()
+    gxx = read_command('cmd -n "^(.*-)?g\+\+(-[0-9]+)?$"')[1].split()
+
+    group = {}
+
+    for cmd in gcc:
+        g = get_group(cmd, c=True)
+        if g not in group:
+            group[g] = [True, False]
+    
+    for cmd in gxx:
+        g = get_group(cmd, c=False)
+        if g not in group:
+            group[g] = [False, True]
+        else:
+            group[g][1] = True
+
+    res = []
+
+    for g in group:
+        ver = [g]
+        if group[g][0]:
+            cmd = g.replace("/g/", "gcc")
+            exefile = "{}/cver.{}".format(HOME, cmd)
+            ver.append(read_command("{} -o {} {}; {}; rm {}".format(cmd, exefile, tmpfile, exefile, exefile))[1])
+        else:
+            ver.append("None")
+        if group[g][1]:
+            cmd = g.replace("/g/", "g++")
+            exefile = "{}/cver.{}".format(HOME, cmd)
+            ver.append(read_command("{} -o {} {} -Wno-deprecated; {}; rm {}".format(cmd, exefile, tmpfile, exefile, exefile))[1])
+        else:
+            ver.append("None")
+        res.append(ver)
+
+    print(list_table(["Group", "C", "C++"], res), end="")
+
+    os.remove(tmpfile)
