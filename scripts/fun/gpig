@@ -22,13 +22,14 @@ def parse_file(file: str) -> None:
         return
 
     encode = []
+    pig_length = set()
 
     while True:
         for macro in macros:
             match = macro[0].match(item)
             if match:
                 string = match.group()
-                macro[1](encode, match)
+                pig_length.add(macro[1](encode, match))
                 item = item[len(string):]
                 break
         else:
@@ -54,6 +55,10 @@ def parse_file(file: str) -> None:
     keys = list(dict.fromkeys([c for c in code]))
     random.shuffle(keys)
     leng = get_transformation_len(len(keys), base)
+
+    if leng in pig_length:
+        print("PIG pattern length is already used in user-defined macros.")
+        exit(1)
 
     for i, key in enumerate(keys):
         val = int_to_pigs(i, leng)
@@ -81,17 +86,20 @@ if __name__ == '__main__':
     files: List[str] = args.files
 
     if pigs is None:
+        pack = "🐗🐖"
         pigs = ["🐗", "🐖"]
     elif len(pigs) < 2:
         print("PIG patterns must be at least 2 characters long.")
         exit(1)
     else:
+        pack = pigs
         pigs = [pig for pig in pigs]
 
     base = len(pigs)
 
     macros: List[Tuple[Pattern, FunctionType]] = [
         (re.compile('\\s+', re.MULTILINE), lambda x, y: None), # whitespace
+        (re.compile("#define\\s+([{}]+)\\s+[^\n]+".format(pack)), lambda x, y: x.append(y.group()) or len(y.groups()[0])), # exception
         (re.compile("#[^\n]+"), lambda x, y: x.append(y.group())), # macros
         (re.compile('//[^\n]*'), lambda x, y: None), # comment
         (re.compile('/\\*.*\\*/', re.MULTILINE), lambda x, y: None), # comment
