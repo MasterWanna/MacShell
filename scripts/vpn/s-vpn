@@ -1,9 +1,10 @@
 #!/bin/zsh
 
-echo | sudo -S true &>/dev/null && {
+if [[ $UID == 0 ]] 
+then
     echo "Requires non sudo, otherwise EasyConnect.app will do something rubbish"
     exit 1
-}
+fi
 
 /Applications/EasyConnect.app/Contents/Resources/bin/EasyMonitor &> /dev/null &
 /Applications/EasyConnect.app/Contents/MacOS/EasyConnect &> /dev/null &
