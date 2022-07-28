@@ -54,14 +54,16 @@ if __name__ == "__main__":
 
     print(get_split_block(text=vm))
 
-    if run_command([
-            "sudo true || exit 1",
-            "sudo date -n 0101000000.00 &> /dev/null",
-            "/usr/local/bin/prlctl start '{}'".format(vm),
-            "sudo sntp -sS time.apple.com &> /dev/null"
-        ]):
+    if run_command("sudo date -n 0101000000.00 &> /dev/null"):
+        print(get_split_block(text="Set Time Failed!"))
+        exit(1)
+
+    if run_command("/usr/local/bin/prlctl start '{}'".format(vm)):
         print(get_split_block(text="Virtual Machine start failed!"))
         exit(1)
+
+    if run_command("sudo sntp -sS time.apple.com &> /dev/null"):
+        print(get_split_block(text="Reset Time Failed!"))
 
     print(get_split_block(text="Started!"))
     print("If you have not started Parallels Desktop, start using 's-pd'")
